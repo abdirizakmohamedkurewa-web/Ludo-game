@@ -9,18 +9,18 @@ This document provides a detailed, step-by-step development plan for the Python 
 **Goal:** Set up the basic project structure, dependencies, and CI/CD pipeline. The game won't be playable, but the foundation will be in place.
 
 -   **Task 0.1: Initialize Git Repository**
-    -   [ ] Create `.gitignore` for Python (`__pycache__/`, `.venv/`, etc.).
-    -   [ ] Add `LICENSE` file (e.g., MIT).
+    -   [x] Create `.gitignore` for Python (`__pycache__/`, `.venv/`, etc.).
+    -   [x] Add `LICENSE` file (e.g., MIT).
 -   **Task 0.2: Set up `pyproject.toml`**
-    -   [ ] Configure `black` for code formatting.
-    -   [ ] Configure `ruff` for linting.
-    -   [ ] Configure `mypy` for static type checking.
-    -   [ ] Configure `pytest` with initial paths.
+    -   [x] Configure `black` for code formatting.
+    -   [x] Configure `ruff` for linting.
+    -   [~] Configure `mypy` for static type checking. *(Note: mypy configuration is missing from pyproject.toml)*
+    -   [x] Configure `pytest` with initial paths.
 -   **Task 0.3: Create Directory Structure**
-    -   [ ] `ludo/`: for the core game engine.
-    -   [ ] `apps/cli/`: for the command-line interface.
-    -   [ ] `tests/`: for all unit and integration tests.
-    -   [ ] `tests/fixtures/`: for test data.
+    -   [x] `ludo/`: for the core game engine.
+    -   [x] `apps/cli/`: for the command-line interface.
+    -   [x] `tests/`: for all unit and integration tests.
+    -   [x] `tests/fixtures/`: for test data.
 -   **Task 0.4: Define Core Data Models (Stubs)**
     -   [ ] `ludo/state.py`: Create `GameState`, `PlayerState`, `PieceState` dataclasses (initially empty).
     -   [ ] `ludo/piece.py`: Define `Piece` class with basic attributes (color, id, state).
@@ -31,8 +31,8 @@ This document provides a detailed, step-by-step development plan for the Python 
     -   [ ] `ludo/board.py`: Define board constants (e.g., track length) in `ludo/utils/constants.py`.
     -   [ ] `ludo/game.py`: Create `Game` class with an `__init__` method to set up players.
 -   **Task 0.6: Basic CLI Application**
-    -   [ ] `apps/cli/main.py`: Create a `main` function that initializes a `Game` object and prints a "Hello Ludo" message.
-    -   [ ] Add `argparse` for future CLI arguments (`--players`, `--seed`).
+    -   [~] `apps/cli/main.py`: Create a `main` function that initializes a `Game` object and prints a "Hello Ludo" message. *(Note: argparse is set up, but the Game object is not fully initialized and the "Hello Ludo" message is missing.)*
+    -   [x] Add `argparse` for future CLI arguments (`--players`, `--seed`).
 -   **Task 0.7: Setup CI/CD**
     -   [ ] Create `.github/workflows/ci.yml`.
     -   [ ] Add jobs for linting, type checking, and running tests on Python 3.10+.
