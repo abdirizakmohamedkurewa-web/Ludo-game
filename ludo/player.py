@@ -1,0 +1,3 @@
+"""
+Player entity, color, pieces.
+"""

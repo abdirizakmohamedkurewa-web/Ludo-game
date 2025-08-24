@@ -1,0 +1,3 @@
+"""
+Board geometry, squares, paths.
+"""
