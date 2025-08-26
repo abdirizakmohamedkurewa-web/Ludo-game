@@ -13,3 +13,14 @@ START_SQUARES = {
     PlayerColor.YELLOW: 26,
     PlayerColor.BLUE: 39,
 }
+
+# The square before a piece enters its home column
+HOME_ENTRY_SQUARES = {
+    PlayerColor.RED: 51,
+    PlayerColor.GREEN: 12,
+    PlayerColor.YELLOW: 25,
+    PlayerColor.BLUE: 38,
+}
+
+# The home column has 6 squares (52-57)
+HOME_COLUMN_LENGTH = 6

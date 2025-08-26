@@ -34,9 +34,9 @@ This document provides a detailed, step-by-step development plan for the Python 
     -   [x] `apps/cli/main.py`: Create a `main` function that initializes a `Game` object and prints a "Hello Ludo" message.
     -   [x] Add `argparse` for future CLI arguments (`--players`, `--seed`).
 -   **Task 0.7: Setup CI/CD**
-    -   [ ] Create `.github/workflows/ci.yml`.
-    -   [ ] Add jobs for linting, type checking, and running tests on Python 3.10+.
-    -   [ ] Ensure the initial (empty) test suite runs and passes.
+    -   [x] Create `.github/workflows/ci.yml`.
+    -   [x] Add jobs for linting, type checking, and running tests on Python 3.10+.
+    -   [x] Ensure the initial (empty) test suite runs and passes.
 
 ---
 
@@ -48,8 +48,8 @@ This document provides a detailed, step-by-step development plan for the Python 
     -   [x] Make `Dice.roll()` return a random number from 1-6.
     -   [x] Add seeding capability for reproducible tests.
 -   **Task 1.2: Implement Piece Movement**
-    -   [ ] Define piece states: `YARD`, `TRACK`, `HOME_COLUMN`, `HOME`.
-    -   [ ] Implement logic to move a piece along the main track.
+    -   [x] Define piece states: `YARD`, `TRACK`, `HOME_COLUMN`, `HOME`.
+    -   [x] Implement logic to move a piece along the main track.
 -   **Task 1.3: Implement "Enter from Yard" Rule**
     -   [ ] A piece can only move from `YARD` to its entry square if a `6` is rolled.
     -   [ ] The move from `YARD` consumes the `6` (no further movement on that roll).
