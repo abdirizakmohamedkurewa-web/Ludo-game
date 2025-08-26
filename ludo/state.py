@@ -13,3 +13,15 @@ class GameState:
     current_player_index: int = 0
     dice_roll: Optional[int] = None
     is_game_over: bool = False
+
+
+@dataclass
+class PlayerState:
+    """Represents the state of a single player."""
+    pass
+
+
+@dataclass
+class PieceState:
+    """Represents the state of a single piece."""
+    pass
