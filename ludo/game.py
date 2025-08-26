@@ -7,7 +7,7 @@ from ludo.state import GameState
 from ludo.player import Player
 from ludo.piece import Piece
 from ludo.utils.constants import PlayerColor, PieceState
-from ludo.board import START_SQUARES, TRACK_LENGTH
+from ludo.board import START_SQUARES, TRACK_LENGTH, HOME_COLUMN_LENGTH
 
 
 class Game:
@@ -36,5 +36,28 @@ class Game:
             piece.state = PieceState.TRACK
             piece.position = START_SQUARES[piece.color]
         elif piece.state == PieceState.TRACK:
-            # Move along the track
-            piece.position = (piece.position + roll) % TRACK_LENGTH
+            start_square = START_SQUARES[piece.color]
+            progress = (piece.position - start_square + TRACK_LENGTH) % TRACK_LENGTH
+            new_progress = progress + roll
+
+            # A piece enters the home column after passing the 50th square of its path
+            if new_progress >= 51:
+                home_pos = new_progress - 51
+                if home_pos < HOME_COLUMN_LENGTH:
+                    piece.state = PieceState.HOME_COLUMN
+                    piece.position = 52 + home_pos
+                    if home_pos == HOME_COLUMN_LENGTH - 1:
+                        piece.state = PieceState.HOME
+                # Note: "Exact roll" logic is not implemented here. We assume the move is legal.
+            else:
+                # Move along the track
+                piece.position = (piece.position + roll) % TRACK_LENGTH
+        elif piece.state == PieceState.HOME_COLUMN:
+            current_home_pos = piece.position - 52
+            new_home_pos = current_home_pos + roll
+
+            if new_home_pos < HOME_COLUMN_LENGTH:
+                piece.position = 52 + new_home_pos
+                if new_home_pos == HOME_COLUMN_LENGTH - 1:
+                    piece.state = PieceState.HOME
+            # Note: "Exact roll" logic is not implemented here.
