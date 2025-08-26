@@ -2,6 +2,7 @@
 Dice abstraction (seedable for tests).
 """
 import random
+from typing import Optional
 
 
 class Dice:

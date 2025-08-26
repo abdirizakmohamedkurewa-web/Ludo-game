@@ -31,7 +31,7 @@ This document provides a detailed, step-by-step development plan for the Python 
     -   [ ] `ludo/board.py`: Define board constants (e.g., track length) in `ludo/utils/constants.py`.
     -   [ ] `ludo/game.py`: Create `Game` class with an `__init__` method to set up players.
 -   **Task 0.6: Basic CLI Application**
-    -   [~] `apps/cli/main.py`: Create a `main` function that initializes a `Game` object and prints a "Hello Ludo" message. *(Note: argparse is set up, but the Game object is not fully initialized and the "Hello Ludo" message is missing.)*
+    -   [x] `apps/cli/main.py`: Create a `main` function that initializes a `Game` object and prints a "Hello Ludo" message.
     -   [x] Add `argparse` for future CLI arguments (`--players`, `--seed`).
 -   **Task 0.7: Setup CI/CD**
     -   [ ] Create `.github/workflows/ci.yml`.

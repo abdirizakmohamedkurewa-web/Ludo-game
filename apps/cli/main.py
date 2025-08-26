@@ -1,8 +1,9 @@
 from ludo.game import Game
 from ludo.dice import Dice
-from ludo.bots.random_bot import RandomBot
 
 def main():
+    """The main entry point for the command-line application."""
+    print("Hello Ludo")
     import argparse
     p = argparse.ArgumentParser()
     p.add_argument("--players", nargs="+", default=["human","random"])

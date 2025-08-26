@@ -1,12 +1,13 @@
 import pytest
 from ludo.game import Game
+from ludo.dice import Dice
 from ludo.utils.constants import PieceState, PlayerColor
 from ludo.board import START_SQUARES
 
 @pytest.fixture
 def game():
     """Returns a game instance with a fresh state."""
-    g = Game()
+    g = Game(players=["red", "green"], dice=Dice())
     # Let's work with the RED player for consistency
     g.state.current_player_index = 0
     return g
