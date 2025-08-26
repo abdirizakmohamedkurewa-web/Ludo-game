@@ -13,19 +13,16 @@ class Rules:
     def get_legal_moves(game_state: GameState, roll: int) -> List[Piece]:
         """
         Determines which of the current player's pieces have legal moves.
+        If a 6 is rolled, priority is given to moving a piece from the yard.
         """
-        legal_pieces = []
         player = game_state.players[game_state.current_player_index]
 
         if roll == 6:
-            # If a 6 is rolled, any piece in the yard is a legal move
-            for piece in player.pieces:
-                if piece.state == PieceState.YARD:
-                    legal_pieces.append(piece)
+            yard_pieces = [p for p in player.pieces if p.state == PieceState.YARD]
+            if yard_pieces:
+                # If a 6 is rolled and pieces are in the yard, these are the only legal moves
+                return yard_pieces
 
-        # Any piece on the track is a legal move
-        for piece in player.pieces:
-            if piece.state == PieceState.TRACK:
-                legal_pieces.append(piece)
-
-        return legal_pieces
+        # If the roll is not 6, or if it is 6 but no pieces are in the yard,
+        # then any piece on the track is a legal move.
+        return [p for p in player.pieces if p.state == PieceState.TRACK]
