@@ -1,5 +1,6 @@
 import pytest
 from ludo.game import Game
+from ludo.dice import Dice
 from ludo.utils.constants import PlayerColor, PieceState
 
 
@@ -8,7 +9,7 @@ def test_game_initialization():
     Tests that the game is initialized with the correct
     number of players and pieces in the correct initial state.
     """
-    game = Game()
+    game = Game(players=["red", "green", "yellow", "blue"], dice=Dice())
     state = game.state
 
     # Check for 4 players
