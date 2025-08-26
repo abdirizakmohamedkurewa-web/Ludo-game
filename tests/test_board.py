@@ -22,7 +22,7 @@ def test_move_piece_from_yard(game):
     assert piece_to_move.state == PieceState.YARD
     assert piece_to_move.position == -1
 
-    game.move_piece(piece_to_move)
+    game.move_piece(piece_to_move, roll=6)
 
     # Post-condition
     assert piece_to_move.state == PieceState.TRACK
@@ -40,9 +40,8 @@ def test_move_piece_on_track(game):
     # Setup: Place a piece on the track
     piece_to_move.state = PieceState.TRACK
     piece_to_move.position = 10
-    game.state.dice_roll = 4
-
-    game.move_piece(piece_to_move)
+    roll = 4
+    game.move_piece(piece_to_move, roll)
 
     # Post-condition
     assert piece_to_move.state == PieceState.TRACK
