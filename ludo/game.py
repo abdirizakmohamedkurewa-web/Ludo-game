@@ -29,17 +29,12 @@ class Game:
         """Runs the game loop for the Command-Line Interface."""
         print("Game loop starts now (not implemented).")
 
-    def move_piece(self, piece: Piece):
-        """Moves a piece according to the last dice roll."""
+    def move_piece(self, piece: Piece, roll: int):
+        """Moves a piece according to the given dice roll."""
         if piece.state == PieceState.YARD:
             # Move from YARD to start square
             piece.state = PieceState.TRACK
             piece.position = START_SQUARES[piece.color]
         elif piece.state == PieceState.TRACK:
             # Move along the track
-            roll = self.state.dice_roll
-            if roll is None:
-                raise ValueError("Cannot move piece without a dice roll.")
-
-            # Simple movement for now, no wrapping around the board yet
             piece.position = (piece.position + roll) % TRACK_LENGTH
