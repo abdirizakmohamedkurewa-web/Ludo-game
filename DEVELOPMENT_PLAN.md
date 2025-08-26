@@ -45,8 +45,8 @@ This document provides a detailed, step-by-step development plan for the Python 
 **Goal:** Implement all core Ludo rules to make the game fully playable from the CLI.
 
 -   **Task 1.1: Implement Dice Logic**
-    -   [ ] Make `Dice.roll()` return a random number from 1-6.
-    -   [ ] Add seeding capability for reproducible tests.
+    -   [x] Make `Dice.roll()` return a random number from 1-6.
+    -   [x] Add seeding capability for reproducible tests.
 -   **Task 1.2: Implement Piece Movement**
     -   [ ] Define piece states: `YARD`, `TRACK`, `HOME_COLUMN`, `HOME`.
     -   [ ] Implement logic to move a piece along the main track.
