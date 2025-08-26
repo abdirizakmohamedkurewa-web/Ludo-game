@@ -1,0 +1,29 @@
+import pygame
+
+# Screen dimensions
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 800
+
+# Colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+YELLOW = (255, 255, 0)
+
+# Board dimensions
+BOARD_MARGIN = 50
+GRID_SIZE = 40
+YARD_SIZE = 200
+HOME_COLUMN_WIDTH = GRID_SIZE
+HOME_COLUMN_HEIGHT = YARD_SIZE
+HOME_AREA_SIZE = 120
+
+# Player colors
+PLAYER_COLORS = {
+    "RED": RED,
+    "GREEN": GREEN,
+    "BLUE": BLUE,
+    "YELLOW": YELLOW,
+}
