@@ -14,7 +14,7 @@ This document provides a detailed, step-by-step development plan for the Python 
 -   **Task 0.2: Set up `pyproject.toml`**
     -   [x] Configure `black` for code formatting.
     -   [x] Configure `ruff` for linting.
-    -   [~] Configure `mypy` for static type checking. *(Note: mypy configuration is missing from pyproject.toml)*
+    -   [x] Configure `mypy` for static type checking.
     -   [x] Configure `pytest` with initial paths.
 -   **Task 0.3: Create Directory Structure**
     -   [x] `ludo/`: for the core game engine.
