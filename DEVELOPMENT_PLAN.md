@@ -22,14 +22,14 @@ This document provides a detailed, step-by-step development plan for the Python 
     -   [x] `tests/`: for all unit and integration tests.
     -   [x] `tests/fixtures/`: for test data.
 -   **Task 0.4: Define Core Data Models (Stubs)**
-    -   [ ] `ludo/state.py`: Create `GameState`, `PlayerState`, `PieceState` dataclasses (initially empty).
-    -   [ ] `ludo/piece.py`: Define `Piece` class with basic attributes (color, id, state).
-    -   [ ] `ludo/player.py`: Define `Player` class (color, list of pieces).
+    -   [x] `ludo/state.py`: Create `GameState`, `PlayerState`, `PieceState` dataclasses (initially empty).
+    -   [x] `ludo/piece.py`: Define `Piece` class with basic attributes (color, id, state).
+    -   [x] `ludo/player.py`: Define `Player` class (color, list of pieces).
 -   **Task 0.5: Create Core Logic Stubs**
-    -   [ ] `ludo/dice.py`: Create `Dice` class with a `roll()` method (can be hardcoded to return 1 for now).
-    -   [ ] `ludo/rules.py`: Create `Rules` class with an empty `legal_moves()` method.
-    -   [ ] `ludo/board.py`: Define board constants (e.g., track length) in `ludo/utils/constants.py`.
-    -   [ ] `ludo/game.py`: Create `Game` class with an `__init__` method to set up players.
+    -   [x] `ludo/dice.py`: Create `Dice` class with a `roll()` method (can be hardcoded to return 1 for now).
+    -   [x] `ludo/rules.py`: Create `Rules` class with an empty `legal_moves()` method.
+    -   [x] `ludo/board.py`: Define board constants (e.g., track length) in `ludo/utils/constants.py`.
+    -   [x] `ludo/game.py`: Create `Game` class with an `__init__` method to set up players.
 -   **Task 0.6: Basic CLI Application**
     -   [x] `apps/cli/main.py`: Create a `main` function that initializes a `Game` object and prints a "Hello Ludo" message.
     -   [x] Add `argparse` for future CLI arguments (`--players`, `--seed`).
