@@ -54,3 +54,23 @@ def test_first_move_bot_no_moves():
     mock_game_state = GameState(players=[])
     with pytest.raises(ValueError, match="No legal moves available"):
         bot.choose_move([], mock_game_state)
+
+
+from ludo.bots.random_bot import RandomBot
+
+def test_random_bot():
+    """
+    Tests that the RandomBot chooses a move from the legal options.
+    """
+    # Create mock pieces
+    piece1 = Piece(id=0, color=PlayerColor.GREEN)
+    piece2 = Piece(id=1, color=PlayerColor.GREEN)
+    legal_moves = [piece1, piece2]
+
+    # Create a mock GameState
+    mock_game_state = GameState(players=[])
+
+    bot = RandomBot()
+    chosen_move = bot.choose_move(legal_moves, mock_game_state)
+
+    assert chosen_move in legal_moves
