@@ -125,6 +125,80 @@ def test_move_is_not_blocked_if_rule_is_disabled(game):
     assert red_piece in legal_moves
 
 
+def test_capture_opponent_piece(game):
+    """
+    Tests that landing on a square with an opponent's piece captures it,
+    sending it back to the yard.
+    """
+    red_player = game.state.players[0]
+    red_piece = red_player.pieces[0]
+    red_piece.state = PieceState.TRACK
+    red_piece.position = 10
+
+    green_player = game.state.players[1]
+    green_piece = green_player.pieces[0]
+    green_piece.state = PieceState.TRACK
+    green_piece.position = 12  # This is not a safe square
+
+    # Move the red piece to land on the green piece
+    game.move_piece(red_piece, 2)
+
+    # Check that the red piece moved and the green piece was captured
+    assert red_piece.position == 12
+    assert green_piece.state == PieceState.YARD
+    assert green_piece.position == -1  # Standard representation for yard
+
+
+def test_no_capture_on_safe_square(game):
+    """
+    Tests that landing on a safe square with an opponent's piece
+    does not capture it.
+    """
+    red_player = game.state.players[0]
+    red_piece = red_player.pieces[0]
+    red_piece.state = PieceState.TRACK
+    red_piece.position = 10
+
+    green_player = game.state.players[1]
+    green_piece = green_player.pieces[0]
+    green_piece.state = PieceState.TRACK
+    green_piece.position = 13  # Green's start square, which is a safe square
+
+    # Move the red piece to land on the green piece on a safe square
+    game.move_piece(red_piece, 3)
+
+    # The red piece should move, but the green piece should not be captured
+    assert red_piece.position == 13
+    assert green_piece.state == PieceState.TRACK  # State is unchanged
+    assert green_piece.position == 13         # Position is unchanged
+
+
+def test_move_is_blocked_by_distant_blockade(game):
+    """
+    Tests that a piece cannot pass a blockade even if it's far away.
+    """
+    red_player = game.state.players[0]
+    red_piece = red_player.pieces[0]
+    red_piece.state = PieceState.TRACK
+    red_piece.position = 0
+
+    # Player 2 (green) has a blockade at position 5
+    green_player = game.state.players[1]
+    green_piece1 = green_player.pieces[0]
+    green_piece2 = green_player.pieces[1]
+    green_piece1.state = PieceState.TRACK
+    green_piece1.position = 5
+    green_piece2.state = PieceState.TRACK
+    green_piece2.position = 5
+
+    # Attempt to move the red piece by rolling a 6 (would pass the blockade)
+    roll = 6
+    legal_moves = Rules.get_legal_moves(game.state, roll, use_blocking_rule=True)
+
+    # The move should be illegal
+    assert red_piece not in legal_moves
+
+
 def test_move_is_not_blocked_by_own_pieces(game):
     """
     Tests that a player is not blocked by a blockade of their own pieces.

@@ -64,10 +64,10 @@ This document provides a detailed, step-by-step development plan for the Python 
     -   [x] Rolling a `6` grants the player an additional turn.
     -   [x] (Configurable) Implement the "three consecutive 6s forfeit turn" rule.
 -   **Task 1.7: Implement Blocking (Optional Rule)**
-    -   [ ] (Configurable) If two pieces of the same color are on the same square, they form a block.
-    -   [ ] Opponent pieces cannot pass a block.
+    -   [x] (Configurable) If two pieces of the same color are on the same square, they form a block.
+    -   [x] Opponent pieces cannot pass a block.
 -   **Task 1.8: Comprehensive Tests for Rules**
-    -   [ ] Write unit tests for every rule and edge case in `tests/test_rules.py`.
+    -   [x] Write unit tests for every rule and edge case in `tests/test_rules.py`.
 
 ---
 
