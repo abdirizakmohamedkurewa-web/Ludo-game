@@ -2,6 +2,7 @@ import pytest
 from ludo.game import Game
 from ludo.dice import Dice
 from ludo.rules import Rules
+from ludo.move import move_piece
 from ludo.utils.constants import PieceState, PlayerColor
 from ludo.board import HOME_COLUMN_LENGTH
 
@@ -71,7 +72,7 @@ def test_player_wins_when_all_pieces_are_home(game):
     assert not game.state.is_game_over
 
     # Move the last piece to HOME
-    game.move_piece(last_piece, 1)
+    move_piece(game.state, last_piece, 1)
 
     # Post-condition: game is over
     assert game.state.is_game_over
@@ -92,6 +93,6 @@ def test_game_not_over_if_not_all_pieces_home(game):
     last_piece.position = 20
 
     # Move the piece
-    game.move_piece(last_piece, 3)
+    move_piece(game.state, last_piece, 3)
 
     assert not game.state.is_game_over
