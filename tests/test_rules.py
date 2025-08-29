@@ -69,3 +69,109 @@ def test_yard_exit_has_priority_on_roll_6(game):
     assert len(legal_moves) == 1
     assert piece_in_yard in legal_moves
     assert piece_on_track1 not in legal_moves
+
+
+def test_move_is_blocked_by_opponent_blockade(game):
+    """
+    Tests that a piece cannot pass a blockade of two opponent pieces.
+    """
+    # Player 1 (red) is at the start
+    red_player = game.state.players[0]
+    red_piece = red_player.pieces[0]
+    red_piece.state = PieceState.TRACK
+    red_piece.position = 0
+
+    # Player 2 (green) has a blockade at position 2
+    green_player = game.state.players[1]
+    green_piece1 = green_player.pieces[0]
+    green_piece2 = green_player.pieces[1]
+    green_piece1.state = PieceState.TRACK
+    green_piece1.position = 2
+    green_piece2.state = PieceState.TRACK
+    green_piece2.position = 2
+
+    # Attempt to move the red piece by rolling a 4 (would pass the blockade)
+    roll = 4
+    legal_moves = Rules.get_legal_moves(game.state, roll, use_blocking_rule=True)
+
+    # The move should be illegal
+    assert red_piece not in legal_moves
+
+
+def test_move_is_not_blocked_if_rule_is_disabled(game):
+    """
+    Tests that a piece can pass an opponent blockade if the rule is disabled.
+    """
+    # Player 1 (red) is at the start
+    red_player = game.state.players[0]
+    red_piece = red_player.pieces[0]
+    red_piece.state = PieceState.TRACK
+    red_piece.position = 0
+
+    # Player 2 (green) has a blockade at position 2
+    green_player = game.state.players[1]
+    green_piece1 = green_player.pieces[0]
+    green_piece2 = green_player.pieces[1]
+    green_piece1.state = PieceState.TRACK
+    green_piece1.position = 2
+    green_piece2.state = PieceState.TRACK
+    green_piece2.position = 2
+
+    # Attempt to move the red piece by rolling a 4 (would pass the blockade)
+    roll = 4
+    legal_moves = Rules.get_legal_moves(game.state, roll, use_blocking_rule=False)
+
+    # The move should be legal
+    assert red_piece in legal_moves
+
+
+def test_move_is_not_blocked_by_single_opponent_piece(game):
+    """
+    Tests that a single opponent piece does not constitute a blockade.
+    """
+    # Player 1 (red) is at the start
+    red_player = game.state.players[0]
+    red_piece = red_player.pieces[0]
+    red_piece.state = PieceState.TRACK
+    red_piece.position = 0
+
+    # Player 2 (green) has a single piece at position 2
+    green_player = game.state.players[1]
+    green_piece1 = green_player.pieces[0]
+    green_piece1.state = PieceState.TRACK
+    green_piece1.position = 2
+
+    # Attempt to move the red piece by rolling a 4 (would pass the piece)
+    roll = 4
+    legal_moves = Rules.get_legal_moves(game.state, roll, use_blocking_rule=True)
+
+    # The move should be legal
+    assert red_piece in legal_moves
+
+
+def test_move_lands_on_blockade(game):
+    """
+    Tests that a piece can land on a square that has a blockade.
+    The rule is that you cannot *pass* a blockade.
+    """
+    # Player 1 (red) is at the start
+    red_player = game.state.players[0]
+    red_piece = red_player.pieces[0]
+    red_piece.state = PieceState.TRACK
+    red_piece.position = 0
+
+    # Player 2 (green) has a blockade at position 2
+    green_player = game.state.players[1]
+    green_piece1 = green_player.pieces[0]
+    green_piece2 = green_player.pieces[1]
+    green_piece1.state = PieceState.TRACK
+    green_piece1.position = 2
+    green_piece2.state = PieceState.TRACK
+    green_piece2.position = 2
+
+    # Attempt to move the red piece by rolling a 2 (lands on the blockade)
+    roll = 2
+    legal_moves = Rules.get_legal_moves(game.state, roll, use_blocking_rule=True)
+
+    # The move should be legal
+    assert red_piece in legal_moves
