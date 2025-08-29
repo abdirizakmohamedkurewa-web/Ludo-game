@@ -61,8 +61,8 @@ This document provides a detailed, step-by-step development plan for the Python 
     -   [x] Require an **exact roll** to move a piece into the final `HOME` position.
     -   [x] A player wins when all 4 of their pieces are in the `HOME` position.
 -   **Task 1.6: Implement "Extra Turn" Rule**
-    -   [ ] Rolling a `6` grants the player an additional turn.
-    -   [ ] (Configurable) Implement the "three consecutive 6s forfeit turn" rule.
+    -   [x] Rolling a `6` grants the player an additional turn.
+    -   [x] (Configurable) Implement the "three consecutive 6s forfeit turn" rule.
 -   **Task 1.7: Implement Blocking (Optional Rule)**
     -   [ ] (Configurable) If two pieces of the same color are on the same square, they form a block.
     -   [ ] Opponent pieces cannot pass a block.
