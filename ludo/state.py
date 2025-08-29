@@ -13,6 +13,7 @@ class GameState:
     current_player_index: int = 0
     dice_roll: Optional[int] = None
     is_game_over: bool = False
+    consecutive_sixes: int = 0
 
 
 @dataclass
