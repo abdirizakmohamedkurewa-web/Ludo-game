@@ -7,7 +7,7 @@ from ludo.state import GameState
 from ludo.player import Player
 from ludo.piece import Piece
 from ludo.utils.constants import PlayerColor, PieceState
-from ludo.board import START_SQUARES, TRACK_LENGTH, HOME_COLUMN_LENGTH
+from ludo.board import START_SQUARES, TRACK_LENGTH, HOME_COLUMN_LENGTH, SAFE_SQUARES
 
 
 class Game:
@@ -52,6 +52,19 @@ class Game:
             else:
                 # Move along the track
                 piece.position = (piece.position + roll) % TRACK_LENGTH
+
+                # Check for captures
+                if piece.position not in SAFE_SQUARES:
+                    for player in self.state.players:
+                        if player.color == piece.color:
+                            continue
+                        for opponent_piece in player.pieces:
+                            if (
+                                opponent_piece.state == PieceState.TRACK
+                                and opponent_piece.position == piece.position
+                            ):
+                                opponent_piece.state = PieceState.YARD
+                                opponent_piece.position = -1  # Back to yard
         elif piece.state == PieceState.HOME_COLUMN:
             current_home_pos = piece.position - 52
             new_home_pos = current_home_pos + roll
