@@ -6,14 +6,16 @@ from ludo.dice import Dice
 from ludo.state import GameState
 from ludo.player import Player
 from ludo.piece import Piece
+from ludo.rules import Rules
 from ludo.utils.constants import PlayerColor, PieceState
 from ludo.board import START_SQUARES, TRACK_LENGTH, HOME_COLUMN_LENGTH, SAFE_SQUARES
 
 
 class Game:
     """Orchestrates a game of Ludo."""
-    def __init__(self, players: Sequence[str], dice: Dice):
+    def __init__(self, players: Sequence[str], dice: Dice, three_six_forfeit: bool = True):
         self.dice = dice
+        self.three_six_forfeit = three_six_forfeit
 
         colors = [PlayerColor.RED, PlayerColor.GREEN, PlayerColor.YELLOW, PlayerColor.BLUE]
 
@@ -27,7 +29,53 @@ class Game:
 
     def loop_cli(self):
         """Runs the game loop for the Command-Line Interface."""
-        print("Game loop starts now (not implemented).")
+        while not self.state.is_game_over:
+            player = self.state.players[self.state.current_player_index]
+            print(f"\n--- {player.color.value}'s Turn ---")
+
+            roll = self.dice.roll()
+            self.state.dice_roll = roll
+            print(f"Rolled a {roll}")
+
+            if roll == 6:
+                self.state.consecutive_sixes += 1
+            else:
+                self.state.consecutive_sixes = 0
+
+            if self.three_six_forfeit and self.state.consecutive_sixes == 3:
+                print("Rolled three consecutive 6s. Forfeiting turn.")
+                self.state.consecutive_sixes = 0  # Reset for next player
+                self.next_player()
+                continue
+
+            legal_moves = Rules.get_legal_moves(self.state, roll)
+
+            if not legal_moves:
+                print("No legal moves.")
+                if roll != 6:
+                    self.next_player()
+                else:
+                    print("Got an extra turn for rolling a 6.")
+                continue
+
+            # For now, just choose the first legal move automatically
+            piece_to_move = legal_moves[0]
+            print(f"Moving piece {piece_to_move.id}")
+            self.move_piece(piece_to_move, roll)
+
+            if self.state.is_game_over:
+                print(f"\n--- Player {player.color.value} wins! ---")
+                break
+
+            if roll != 6:
+                self.next_player()
+            else:
+                print("Got an extra turn for rolling a 6.")
+
+    def next_player(self):
+        """Advances to the next player."""
+        self.state.current_player_index = (self.state.current_player_index + 1) % len(self.state.players)
+        self.state.consecutive_sixes = 0
 
     def move_piece(self, piece: Piece, roll: int):
         """Moves a piece according to the given dice roll."""
