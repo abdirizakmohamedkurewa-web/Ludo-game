@@ -51,11 +51,11 @@ This document provides a detailed, step-by-step development plan for the Python 
     -   [x] Define piece states: `YARD`, `TRACK`, `HOME_COLUMN`, `HOME`.
     -   [x] Implement logic to move a piece along the main track.
 -   **Task 1.3: Implement "Enter from Yard" Rule**
-    -   [ ] A piece can only move from `YARD` to its entry square if a `6` is rolled.
-    -   [ ] The move from `YARD` consumes the `6` (no further movement on that roll).
+    -   [x] A piece can only move from `YARD` to its entry square if a `6` is rolled.
+    -   [x] The move from `YARD` consumes the `6` (no further movement on that roll).
 -   **Task 1.4: Implement Captures**
-    -   [ ] If a piece lands on a square occupied by an opponent, the opponent's piece is sent back to its `YARD`.
-    -   [ ] Implement "safe squares" where captures are not possible.
+    -   [x] If a piece lands on a square occupied by an opponent, the opponent's piece is sent back to its `YARD`.
+    -   [x] Implement "safe squares" where captures are not possible.
 -   **Task 1.5: Implement Home Column & Winning**
     -   [ ] Implement the logic for a piece to enter its home column.
     -   [ ] Require an **exact roll** to move a piece into the final `HOME` position.
