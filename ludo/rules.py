@@ -4,7 +4,7 @@ Move validation, capture rules, safe squares.
 from typing import List
 from ludo.state import GameState
 from ludo.piece import Piece
-from ludo.utils.constants import PieceState
+from ludo.utils.constants import PieceState, PlayerColor
 from ludo.board import (
     HOME_COLUMN_LENGTH,
     START_SQUARES,
@@ -15,7 +15,7 @@ from ludo.board import (
 class Rules:
     """Contains all the game logic and rules."""
     @staticmethod
-    def get_legal_moves(game_state: GameState, roll: int) -> List[Piece]:
+    def get_legal_moves(game_state: GameState, roll: int, use_blocking_rule: bool = True) -> List[Piece]:
         """
         Determines which of the current player's pieces have legal moves.
         - If a 6 is rolled, priority is given to moving a piece from the yard.
@@ -39,7 +39,20 @@ class Rules:
                 new_progress = progress + roll
                 # A piece's total journey is 51 steps on the track + 6 in the home column
                 if new_progress < TRACK_LENGTH - 1 + HOME_COLUMN_LENGTH:
-                    legal_moves.append(piece)
+                    # Check for blocks if the rule is enabled
+                    path_is_clear = True
+                    if use_blocking_rule:
+                        # Check squares the piece would pass *over*
+                        for i in range(1, roll):
+                            intermediate_square = (piece.position + i) % TRACK_LENGTH
+                            if Rules.is_square_blocked_by_opponent(
+                                intermediate_square, player.color, game_state
+                            ):
+                                path_is_clear = False
+                                break
+
+                    if path_is_clear:
+                        legal_moves.append(piece)
 
             elif piece.state == PieceState.HOME_COLUMN:
                 # The piece's position in the home column (0-4, since 5 is HOME)
@@ -51,3 +64,22 @@ class Rules:
                     legal_moves.append(piece)
 
         return legal_moves
+
+    @staticmethod
+    def is_square_blocked_by_opponent(
+        square_position: int, current_player_color: PlayerColor, game_state: GameState
+    ) -> bool:
+        """Checks if a square is blocked by two or more pieces of the same opponent color."""
+        for player in game_state.players:
+            if player.color == current_player_color:
+                continue  # Friendly pieces don't block the current player
+
+            opponent_pieces_on_square = 0
+            for piece in player.pieces:
+                if piece.position == square_position and piece.state == PieceState.TRACK:
+                    opponent_pieces_on_square += 1
+
+            if opponent_pieces_on_square >= 2:
+                return True  # Found a block from this opponent
+
+        return False

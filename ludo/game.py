@@ -13,9 +13,10 @@ from ludo.board import START_SQUARES, TRACK_LENGTH, HOME_COLUMN_LENGTH, SAFE_SQU
 
 class Game:
     """Orchestrates a game of Ludo."""
-    def __init__(self, players: Sequence[str], dice: Dice, three_six_forfeit: bool = True):
+    def __init__(self, players: Sequence[str], dice: Dice, three_six_forfeit: bool = True, use_blocking_rule: bool = True):
         self.dice = dice
         self.three_six_forfeit = three_six_forfeit
+        self.use_blocking_rule = use_blocking_rule
 
         colors = [PlayerColor.RED, PlayerColor.GREEN, PlayerColor.YELLOW, PlayerColor.BLUE]
 
@@ -48,7 +49,9 @@ class Game:
                 self.next_player()
                 continue
 
-            legal_moves = Rules.get_legal_moves(self.state, roll)
+            legal_moves = Rules.get_legal_moves(
+                self.state, roll, self.use_blocking_rule
+            )
 
             if not legal_moves:
                 print("No legal moves.")
