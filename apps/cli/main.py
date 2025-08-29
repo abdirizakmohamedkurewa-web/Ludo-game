@@ -11,9 +11,16 @@ def main():
     args = p.parse_args()
 
     dice = Dice(seed=args.seed)
+    from ludo.bots.random_bot import RandomBot
+
     players = []
     for role in args.players:
-        players.append(role)  # "human" or Strategy instance ("random")
+        if role == "human":
+            players.append(role)
+        elif role == "random":
+            players.append(RandomBot())
+        else:
+            raise ValueError(f"Unknown player role: {role}")
 
     game = Game(players=players, dice=dice)
     game.loop_cli()  # human input via stdin; bots via strategy
