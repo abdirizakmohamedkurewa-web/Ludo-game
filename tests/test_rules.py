@@ -125,6 +125,100 @@ def test_move_is_not_blocked_if_rule_is_disabled(game):
     assert red_piece in legal_moves
 
 
+def test_move_is_not_blocked_by_own_pieces(game):
+    """
+    Tests that a player is not blocked by a blockade of their own pieces.
+    """
+    # Player 1 (red) is at the start and also has a blockade
+    red_player = game.state.players[0]
+    red_piece_to_move = red_player.pieces[0]
+    red_blockade_1 = red_player.pieces[1]
+    red_blockade_2 = red_player.pieces[2]
+
+    red_piece_to_move.state = PieceState.TRACK
+    red_piece_to_move.position = 0
+
+    red_blockade_1.state = PieceState.TRACK
+    red_blockade_1.position = 2
+    red_blockade_2.state = PieceState.TRACK
+    red_blockade_2.position = 2
+
+    # Attempt to move the piece by rolling a 4 (would pass the 'blockade')
+    roll = 4
+    legal_moves = Rules.get_legal_moves(game.state, roll, use_blocking_rule=True)
+
+    # The move should be legal as it's not an opponent's blockade
+    assert red_piece_to_move in legal_moves
+
+
+def test_piece_moves_from_track_to_home_column(game):
+    """
+    Tests that a piece correctly enters the home column from the main track.
+    Also tests that a high roll can land it directly in the HOME state.
+    """
+    red_player = game.state.players[0]
+    red_piece = red_player.pieces[0]
+
+    # Position the piece near the home entry (pos 50 for red)
+    red_piece.state = PieceState.TRACK
+    red_piece.position = 50
+
+    # --- Case 1: Enter the middle of the home column ---
+    roll_enter = 3
+    legal_moves_enter = Rules.get_legal_moves(game.state, roll_enter)
+    assert red_piece in legal_moves_enter
+
+    # Manually move the piece to check the game logic's effect
+    game.move_piece(red_piece, roll_enter)
+    assert red_piece.state == PieceState.HOME_COLUMN
+    # progress = 50, new_progress = 53. home_pos = 53-51=2. new_pos = 52+2=54
+    assert red_piece.position == 54
+
+    # --- Case 2: Land exactly in the HOME state from the track ---
+    # Reset piece state and ensure no other pieces are in the yard to test this
+    red_piece.state = PieceState.TRACK
+    red_piece.position = 50
+    for p in red_player.pieces:
+        if p.id != red_piece.id:
+            p.state = PieceState.TRACK  # Move other pieces out of the yard
+            p.position = 10  # Arbitrary track position
+
+    roll_win = 6
+    legal_moves_win = Rules.get_legal_moves(game.state, roll_win)
+    assert red_piece in legal_moves_win
+
+    game.move_piece(red_piece, roll_win)
+    assert red_piece.state == PieceState.HOME
+    # progress = 50, new_progress = 56. home_pos = 56-51=5. new_pos = 52+5=57
+    assert red_piece.position == 57
+
+
+def test_home_column_exact_roll_to_win(game):
+    """
+    Tests that a piece can move into the HOME state only with an exact roll.
+    """
+    red_player = game.state.players[0]
+    red_piece = red_player.pieces[0]
+
+    # Position the piece 1 step away from HOME (pos 56 is the 5th spot in the home column)
+    red_piece.state = PieceState.HOME_COLUMN
+    red_piece.position = 56  # Needs a roll of 1 to win
+
+    # Attempt to move with the exact roll needed
+    exact_roll = 1
+    legal_moves_good = Rules.get_legal_moves(game.state, exact_roll)
+
+    # The move should be legal
+    assert red_piece in legal_moves_good
+
+    # Attempt to move with a roll that is too high
+    too_high_roll = 2
+    legal_moves_bad = Rules.get_legal_moves(game.state, too_high_roll)
+
+    # The move should be illegal
+    assert red_piece not in legal_moves_bad
+
+
 def test_move_is_not_blocked_by_single_opponent_piece(game):
     """
     Tests that a single opponent piece does not constitute a blockade.
