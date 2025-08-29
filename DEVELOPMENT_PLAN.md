@@ -76,7 +76,7 @@ This document provides a detailed, step-by-step development plan for the Python 
 **Goal:** Create AI players that can play the game automatically.
 
 -   **Task 2.1: Define Bot Strategy Interface**
-    -   [ ] In `ludo/bots/base.py`, define a `Strategy` protocol with a `choose_move()` method.
+    -   [x] In `ludo/bots/base.py`, define a `Strategy` protocol with a `choose_move()` method.
 -   **Task 2.2: Implement `RandomBot`**
     -   [ ] `ludo/bots/random_bot.py`: Create a bot that chooses a random move from the list of legal moves.
     -   [ ] Integrate the `RandomBot` into the CLI as a player option.
