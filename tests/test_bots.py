@@ -158,3 +158,32 @@ def test_greedy_bot_chooses_furthest_piece():
 
     # Bot should choose the piece that is further along
     assert chosen_move is p1.pieces[1]
+
+
+def test_greedy_bot_capture_tie_break():
+    """
+    Test that the bot chooses the capture that moves its piece further.
+    """
+    # Player RED can capture one of two pieces
+    p1 = Player(PlayerColor.RED)
+    p1.pieces[0].state = PieceState.TRACK
+    p1.pieces[0].position = 10 # Will land on 14
+    p1.pieces[1].state = PieceState.TRACK
+    p1.pieces[1].position = 20 # Will land on 24
+
+    # Opponent pieces to be captured
+    p2 = Player(PlayerColor.GREEN)
+    p2.pieces[0].state = PieceState.TRACK
+    p2.pieces[0].position = 14 # Target 1
+    p3 = Player(PlayerColor.BLUE)
+    p3.pieces[0].state = PieceState.TRACK
+    p3.pieces[0].position = 24 # Target 2
+
+    game_state = GameState(players=[p1, p2, p3], dice_roll=4)
+    legal_moves = [p1.pieces[0], p1.pieces[1]]
+
+    bot = GreedyBot()
+    chosen_move = bot.choose_move(legal_moves, game_state)
+
+    # Bot should choose the capture that results in a more advanced position
+    assert chosen_move is p1.pieces[1]

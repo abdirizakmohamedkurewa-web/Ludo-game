@@ -38,11 +38,11 @@ class GreedyBot(Strategy):
             for j, original_opponent_piece in enumerate(player.pieces):
                 sim_opponent_piece = sim_state.players[i].pieces[j]
                 if original_opponent_piece.state == PieceState.TRACK and sim_opponent_piece.state == PieceState.YARD:
-                    return 3, 0
+                    return 3, piece_in_sim.position
 
         # 3. Prioritize moving a piece out of the YARD
         if original_piece.state == PieceState.YARD and piece_in_sim.state == PieceState.TRACK:
-            return 2, 0
+            return 2, piece_in_sim.position
 
         # 4. Prioritize moving the piece that is furthest along the track
         if original_piece.state == PieceState.TRACK:
