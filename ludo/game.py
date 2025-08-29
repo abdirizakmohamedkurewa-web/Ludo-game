@@ -35,42 +35,46 @@ class Game:
             # Move from YARD to start square
             piece.state = PieceState.TRACK
             piece.position = START_SQUARES[piece.color]
+            return  # No further logic needed for this move
+
         elif piece.state == PieceState.TRACK:
             start_square = START_SQUARES[piece.color]
             progress = (piece.position - start_square + TRACK_LENGTH) % TRACK_LENGTH
             new_progress = progress + roll
 
-            # A piece enters the home column after passing the 50th square of its path
+            # Check if the piece enters or moves within the home column
             if new_progress >= 51:
                 home_pos = new_progress - 51
-                if home_pos < HOME_COLUMN_LENGTH:
-                    piece.state = PieceState.HOME_COLUMN
-                    piece.position = 52 + home_pos
-                    if home_pos == HOME_COLUMN_LENGTH - 1:
-                        piece.state = PieceState.HOME
-                # Note: "Exact roll" logic is not implemented here. We assume the move is legal.
+                piece.state = PieceState.HOME_COLUMN
+                piece.position = 52 + home_pos
             else:
-                # Move along the track
+                # Move along the main track
                 piece.position = (piece.position + roll) % TRACK_LENGTH
 
-                # Check for captures
-                if piece.position not in SAFE_SQUARES:
-                    for player in self.state.players:
-                        if player.color == piece.color:
-                            continue
-                        for opponent_piece in player.pieces:
-                            if (
-                                opponent_piece.state == PieceState.TRACK
-                                and opponent_piece.position == piece.position
-                            ):
-                                opponent_piece.state = PieceState.YARD
-                                opponent_piece.position = -1  # Back to yard
         elif piece.state == PieceState.HOME_COLUMN:
             current_home_pos = piece.position - 52
             new_home_pos = current_home_pos + roll
+            piece.position = 52 + new_home_pos
 
-            if new_home_pos < HOME_COLUMN_LENGTH:
-                piece.position = 52 + new_home_pos
-                if new_home_pos == HOME_COLUMN_LENGTH - 1:
-                    piece.state = PieceState.HOME
-            # Note: "Exact roll" logic is not implemented here.
+        # Check if the piece reached the final HOME state
+        final_home_pos_idx = HOME_COLUMN_LENGTH - 1
+        if piece.state == PieceState.HOME_COLUMN and (piece.position - 52) == final_home_pos_idx:
+            piece.state = PieceState.HOME
+
+        # Check for captures, only if the piece landed on the main track
+        if piece.state == PieceState.TRACK and piece.position not in SAFE_SQUARES:
+            for player in self.state.players:
+                if player.color == piece.color:
+                    continue
+                for opponent_piece in player.pieces:
+                    if (
+                        opponent_piece.state == PieceState.TRACK
+                        and opponent_piece.position == piece.position
+                    ):
+                        opponent_piece.state = PieceState.YARD
+                        opponent_piece.position = -1  # Back to yard
+
+        # Check for win condition
+        current_player = self.state.players[self.state.current_player_index]
+        if all(p.state == PieceState.HOME for p in current_player.pieces):
+            self.state.is_game_over = True
