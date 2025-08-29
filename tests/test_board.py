@@ -1,6 +1,7 @@
 import pytest
 from ludo.game import Game
 from ludo.dice import Dice
+from ludo.move import move_piece
 from ludo.utils.constants import PieceState, PlayerColor
 from ludo.board import START_SQUARES
 
@@ -22,7 +23,7 @@ def test_move_piece_from_yard(game):
     assert piece_to_move.state == PieceState.YARD
     assert piece_to_move.position == -1
 
-    game.move_piece(piece_to_move, roll=6)
+    move_piece(game.state, piece_to_move, roll=6)
 
     # Post-condition
     assert piece_to_move.state == PieceState.TRACK
@@ -41,7 +42,7 @@ def test_move_piece_on_track(game):
     piece_to_move.state = PieceState.TRACK
     piece_to_move.position = 10
     roll = 4
-    game.move_piece(piece_to_move, roll)
+    move_piece(game.state, piece_to_move, roll)
 
     # Post-condition
     assert piece_to_move.state == PieceState.TRACK

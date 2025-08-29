@@ -2,6 +2,7 @@ import pytest
 from ludo.game import Game
 from ludo.dice import Dice
 from ludo.rules import Rules
+from ludo.move import move_piece
 from ludo.utils.constants import PieceState
 
 @pytest.fixture
@@ -141,7 +142,7 @@ def test_capture_opponent_piece(game):
     green_piece.position = 12  # This is not a safe square
 
     # Move the red piece to land on the green piece
-    game.move_piece(red_piece, 2)
+    move_piece(game.state, red_piece, 2)
 
     # Check that the red piece moved and the green piece was captured
     assert red_piece.position == 12
@@ -165,7 +166,7 @@ def test_no_capture_on_safe_square(game):
     green_piece.position = 13  # Green's start square, which is a safe square
 
     # Move the red piece to land on the green piece on a safe square
-    game.move_piece(red_piece, 3)
+    move_piece(game.state, red_piece, 3)
 
     # The red piece should move, but the green piece should not be captured
     assert red_piece.position == 13
@@ -243,7 +244,7 @@ def test_piece_moves_from_track_to_home_column(game):
     assert red_piece in legal_moves_enter
 
     # Manually move the piece to check the game logic's effect
-    game.move_piece(red_piece, roll_enter)
+    move_piece(game.state, red_piece, roll_enter)
     assert red_piece.state == PieceState.HOME_COLUMN
     # progress = 50, new_progress = 53. home_pos = 53-51=2. new_pos = 52+2=54
     assert red_piece.position == 54
@@ -261,7 +262,7 @@ def test_piece_moves_from_track_to_home_column(game):
     legal_moves_win = Rules.get_legal_moves(game.state, roll_win)
     assert red_piece in legal_moves_win
 
-    game.move_piece(red_piece, roll_win)
+    move_piece(game.state, red_piece, roll_win)
     assert red_piece.state == PieceState.HOME
     # progress = 50, new_progress = 56. home_pos = 56-51=5. new_pos = 52+5=57
     assert red_piece.position == 57

@@ -57,6 +57,9 @@ def test_first_move_bot_no_moves():
 
 
 from ludo.bots.random_bot import RandomBot
+from ludo.bots.greedy_bot import GreedyBot
+from ludo.player import Player
+from ludo.utils.constants import PieceState
 
 def test_random_bot():
     """
@@ -74,3 +77,84 @@ def test_random_bot():
     chosen_move = bot.choose_move(legal_moves, mock_game_state)
 
     assert chosen_move in legal_moves
+
+def test_greedy_bot_chooses_win():
+    """Test that the bot chooses a move that wins the game."""
+    # Player RED has one piece close to home, another on the track
+    p1 = Player(PlayerColor.RED)
+    p1.pieces[0].state = PieceState.HOME_COLUMN
+    p1.pieces[0].position = 56 # Needs a 1 to win
+    p1.pieces[1].state = PieceState.TRACK
+    p1.pieces[1].position = 10
+
+    # All other pieces are HOME
+    for i in range(2, 4):
+        p1.pieces[i].state = PieceState.HOME
+
+    game_state = GameState(players=[p1], dice_roll=1)
+
+    # Legal moves are moving piece 0 or piece 1
+    legal_moves = [p1.pieces[0], p1.pieces[1]]
+
+    bot = GreedyBot()
+    chosen_move = bot.choose_move(legal_moves, game_state)
+
+    # Bot should choose the winning move
+    assert chosen_move is p1.pieces[0]
+
+def test_greedy_bot_chooses_capture():
+    """Test that the bot chooses a move that captures an opponent."""
+    # Player RED can either capture a GREEN piece or move another piece
+    p1 = Player(PlayerColor.RED)
+    p1.pieces[0].state = PieceState.TRACK
+    p1.pieces[0].position = 10 # Will land on 14
+    p1.pieces[1].state = PieceState.TRACK
+    p1.pieces[1].position = 20 # Moves to 24
+
+    p2 = Player(PlayerColor.GREEN)
+    p2.pieces[0].state = PieceState.TRACK
+    p2.pieces[0].position = 14 # Capture target
+
+    game_state = GameState(players=[p1, p2], dice_roll=4)
+    legal_moves = [p1.pieces[0], p1.pieces[1]]
+
+    bot = GreedyBot()
+    chosen_move = bot.choose_move(legal_moves, game_state)
+
+    # Bot should choose the capture
+    assert chosen_move is p1.pieces[0]
+
+
+def test_greedy_bot_chooses_enter_from_yard():
+    """Test that the bot chooses to move a piece from the yard on a 6."""
+    p1 = Player(PlayerColor.RED)
+    p1.pieces[0].state = PieceState.YARD
+    p1.pieces[1].state = PieceState.TRACK
+    p1.pieces[1].position = 10
+
+    game_state = GameState(players=[p1], dice_roll=6)
+    legal_moves = [p1.pieces[0], p1.pieces[1]]
+
+    bot = GreedyBot()
+    chosen_move = bot.choose_move(legal_moves, game_state)
+
+    # Bot should choose to move from the yard
+    assert chosen_move is p1.pieces[0]
+
+
+def test_greedy_bot_chooses_furthest_piece():
+    """Test that the bot chooses to move the piece furthest on the track."""
+    p1 = Player(PlayerColor.RED)
+    p1.pieces[0].state = PieceState.TRACK
+    p1.pieces[0].position = 10 # less far
+    p1.pieces[1].state = PieceState.TRACK
+    p1.pieces[1].position = 30 # more far
+
+    game_state = GameState(players=[p1], dice_roll=2)
+    legal_moves = [p1.pieces[0], p1.pieces[1]]
+
+    bot = GreedyBot()
+    chosen_move = bot.choose_move(legal_moves, game_state)
+
+    # Bot should choose the piece that is further along
+    assert chosen_move is p1.pieces[1]

@@ -8,7 +8,7 @@ from ludo.player import Player
 from ludo.piece import Piece
 from ludo.rules import Rules
 from ludo.utils.constants import PlayerColor, PieceState
-from ludo.board import START_SQUARES, TRACK_LENGTH, HOME_COLUMN_LENGTH, SAFE_SQUARES
+from ludo.move import move_piece
 
 
 class Game:
@@ -62,7 +62,7 @@ class Game:
 
         # 5. Choose a move (for now, always the first legal one)
         piece_to_move = legal_moves[0]
-        self.move_piece(piece_to_move, roll)
+        move_piece(self.state, piece_to_move, roll)
 
         # 6. Check for win condition
         if self.state.is_game_over:
@@ -99,53 +99,3 @@ class Game:
         """Advances to the next player."""
         self.state.current_player_index = (self.state.current_player_index + 1) % len(self.state.players)
         self.state.consecutive_sixes = 0
-
-    def move_piece(self, piece: Piece, roll: int):
-        """Moves a piece according to the given dice roll."""
-        if piece.state == PieceState.YARD:
-            # Move from YARD to start square
-            piece.state = PieceState.TRACK
-            piece.position = START_SQUARES[piece.color]
-            return  # No further logic needed for this move
-
-        elif piece.state == PieceState.TRACK:
-            start_square = START_SQUARES[piece.color]
-            progress = (piece.position - start_square + TRACK_LENGTH) % TRACK_LENGTH
-            new_progress = progress + roll
-
-            # Check if the piece enters or moves within the home column
-            if new_progress >= 51:
-                home_pos = new_progress - 51
-                piece.state = PieceState.HOME_COLUMN
-                piece.position = 52 + home_pos
-            else:
-                # Move along the main track
-                piece.position = (piece.position + roll) % TRACK_LENGTH
-
-        elif piece.state == PieceState.HOME_COLUMN:
-            current_home_pos = piece.position - 52
-            new_home_pos = current_home_pos + roll
-            piece.position = 52 + new_home_pos
-
-        # Check if the piece reached the final HOME state
-        final_home_pos_idx = HOME_COLUMN_LENGTH - 1
-        if piece.state == PieceState.HOME_COLUMN and (piece.position - 52) == final_home_pos_idx:
-            piece.state = PieceState.HOME
-
-        # Check for captures, only if the piece landed on the main track
-        if piece.state == PieceState.TRACK and piece.position not in SAFE_SQUARES:
-            for player in self.state.players:
-                if player.color == piece.color:
-                    continue
-                for opponent_piece in player.pieces:
-                    if (
-                        opponent_piece.state == PieceState.TRACK
-                        and opponent_piece.position == piece.position
-                    ):
-                        opponent_piece.state = PieceState.YARD
-                        opponent_piece.position = -1  # Back to yard
-
-        # Check for win condition
-        current_player = self.state.players[self.state.current_player_index]
-        if all(p.state == PieceState.HOME for p in current_player.pieces):
-            self.state.is_game_over = True

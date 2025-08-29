@@ -1,6 +1,7 @@
 import pytest
 from ludo.game import Game
 from ludo.dice import Dice
+from ludo.move import move_piece
 from ludo.player import Player
 from ludo.piece import Piece
 from ludo.utils.constants import PlayerColor, PieceState
@@ -23,7 +24,7 @@ def test_move_piece_on_track():
     roll = 5
 
     # Act
-    game.move_piece(piece_to_move, roll)
+    move_piece(game.state, piece_to_move, roll)
 
     # Assert
     assert piece_to_move.position == 15
@@ -44,7 +45,7 @@ def test_move_piece_into_home_column():
     roll = 3
 
     # Act
-    game.move_piece(piece_to_move, roll)
+    move_piece(game.state, piece_to_move, roll)
 
     # Assert
     # Progress: 50. New progress: 53. Enters home.
@@ -68,7 +69,7 @@ def test_move_piece_within_home_column():
     roll = 2
 
     # Act
-    game.move_piece(piece_to_move, roll)
+    move_piece(game.state, piece_to_move, roll)
 
     # Assert
     # New home index: 1 + 2 = 3.
@@ -91,7 +92,7 @@ def test_move_piece_to_home():
     roll = 1
 
     # Act
-    game.move_piece(piece_to_move, roll)
+    move_piece(game.state, piece_to_move, roll)
 
     # Assert
     # New home index: 4 + 1 = 5. This is the final HOME spot.
@@ -120,7 +121,7 @@ def test_capture_opponent_piece():
     roll = 5
 
     # Act
-    game.move_piece(red_piece, roll)
+    move_piece(game.state, red_piece, roll)
 
     # Assert
     assert red_piece.position == 15
@@ -148,7 +149,7 @@ def test_no_capture_on_safe_square():
     roll = 5
 
     # Act
-    game.move_piece(red_piece, roll)
+    move_piece(game.state, red_piece, roll)
 
     # Assert
     assert red_piece.position == 13
