@@ -57,9 +57,9 @@ This document provides a detailed, step-by-step development plan for the Python 
     -   [x] If a piece lands on a square occupied by an opponent, the opponent's piece is sent back to its `YARD`.
     -   [x] Implement "safe squares" where captures are not possible.
 -   **Task 1.5: Implement Home Column & Winning**
-    -   [ ] Implement the logic for a piece to enter its home column.
-    -   [ ] Require an **exact roll** to move a piece into the final `HOME` position.
-    -   [ ] A player wins when all 4 of their pieces are in the `HOME` position.
+    -   [x] Implement the logic for a piece to enter its home column.
+    -   [x] Require an **exact roll** to move a piece into the final `HOME` position.
+    -   [x] A player wins when all 4 of their pieces are in the `HOME` position.
 -   **Task 1.6: Implement "Extra Turn" Rule**
     -   [ ] Rolling a `6` grants the player an additional turn.
     -   [ ] (Configurable) Implement the "three consecutive 6s forfeit turn" rule.
