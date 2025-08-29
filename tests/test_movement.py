@@ -98,3 +98,59 @@ def test_move_piece_to_home():
     # New absolute position: 52 (base) + 5 = 57.
     assert piece_to_move.state == PieceState.HOME
     assert piece_to_move.position == 57
+
+
+def test_capture_opponent_piece():
+    # Arrange
+    dice = Dice(seed=1)
+    game = Game(players=['human', 'human'], dice=dice)
+    red_player = game.state.players[0]
+    green_player = game.state.players[1]
+
+    # Red piece is at position 10
+    red_piece = red_player.pieces[0]
+    red_piece.state = PieceState.TRACK
+    red_piece.position = 10
+
+    # Green piece is at position 15
+    green_piece = green_player.pieces[0]
+    green_piece.state = PieceState.TRACK
+    green_piece.position = 15
+
+    roll = 5
+
+    # Act
+    game.move_piece(red_piece, roll)
+
+    # Assert
+    assert red_piece.position == 15
+    assert green_piece.state == PieceState.YARD
+    assert green_piece.position == -1
+
+
+def test_no_capture_on_safe_square():
+    # Arrange
+    dice = Dice(seed=1)
+    game = Game(players=['human', 'human'], dice=dice)
+    red_player = game.state.players[0]
+    green_player = game.state.players[1]
+
+    # Red piece is at position 8 (a safe square)
+    red_piece = red_player.pieces[0]
+    red_piece.state = PieceState.TRACK
+    red_piece.position = 8
+
+    # Green piece is at position 13 (a safe square)
+    green_piece = green_player.pieces[0]
+    green_piece.state = PieceState.TRACK
+    green_piece.position = 13
+
+    roll = 5
+
+    # Act
+    game.move_piece(red_piece, roll)
+
+    # Assert
+    assert red_piece.position == 13
+    assert green_piece.state == PieceState.TRACK
+    assert green_piece.position == 13

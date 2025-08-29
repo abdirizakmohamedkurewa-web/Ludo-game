@@ -24,3 +24,11 @@ HOME_ENTRY_SQUARES = {
 
 # The home column has 6 squares (52-57)
 HOME_COLUMN_LENGTH = 6
+
+# Squares that are safe from captures
+SAFE_SQUARES = {
+    START_SQUARES[PlayerColor.RED] + 8,
+    START_SQUARES[PlayerColor.GREEN] + 8,
+    START_SQUARES[PlayerColor.YELLOW] + 8,
+    START_SQUARES[PlayerColor.BLUE] + 8,
+} | set(START_SQUARES.values())
