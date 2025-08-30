@@ -5,8 +5,8 @@ import json
 from pathlib import Path
 from ludo.game import Game
 from ludo.dice import Dice
-from ludo.persistence import save_game
-from ludo.utils.constants import PlayerColor
+from ludo.persistence import save_game, load_game
+from ludo.utils.constants import PlayerColor, PieceState
 
 
 def test_save_game(tmp_path: Path):
@@ -51,3 +51,32 @@ def test_save_game(tmp_path: Path):
         assert piece["color"] == PlayerColor.RED.value
         assert piece["state"] == "YARD"
         assert piece["position"] == -1
+
+
+def test_save_and_load_game(tmp_path: Path):
+    """
+    Tests that a game state can be saved and then loaded,
+    resulting in an identical state.
+    """
+    # 1. Create an original GameState with some non-default values
+    game = Game(players=["blue", "yellow"], dice=Dice(seed=456))
+    original_state = game.state
+    original_state.dice_roll = 4
+    original_state.current_player_index = 1
+    original_state.consecutive_sixes = 2
+
+    # Modify a piece's state to ensure deep parts of the state are saved/loaded
+    piece_to_move = original_state.players[0].pieces[2]
+    piece_to_move.state = PieceState.TRACK
+    piece_to_move.position = 25
+
+    # 2. Save the state to a temporary file
+    save_file = tmp_path / "save.json"
+    save_game(original_state, save_file)
+
+    # 3. Load the state back
+    loaded_state = load_game(save_file)
+
+    # 4. Assert that the loaded state is identical to the original
+    # The GameState is a dataclass, so __eq__ should perform a deep comparison
+    assert loaded_state == original_state
