@@ -26,7 +26,7 @@ class Game:
                 # NOTE: Role ("human", "random", etc.) is ignored for now.
                 player_objects.append(Player(color=colors[i]))
 
-        self.state = GameState(players=player_objects)
+        self.state = GameState(players=player_objects, dice_seed=self.dice.seed)
 
     def play_turn(self, roll: int):
         """
