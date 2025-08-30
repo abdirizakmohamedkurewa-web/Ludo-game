@@ -78,17 +78,17 @@ This document provides a detailed, step-by-step development plan for the Python 
 -   **Task 2.1: Define Bot Strategy Interface**
     -   [x] In `ludo/bots/base.py`, define a `Strategy` protocol with a `choose_move()` method.
 -   **Task 2.2: Implement `RandomBot`**
-    -   [ ] `ludo/bots/random_bot.py`: Create a bot that chooses a random move from the list of legal moves.
-    -   [ ] Integrate the `RandomBot` into the CLI as a player option.
+    -   [x] `ludo/bots/random_bot.py`: Create a bot that chooses a random move from the list of legal moves.
+    -   [x] Integrate the `RandomBot` into the CLI as a player option.
 -   **Task 2.3: Implement `GreedyBot`**
-    -   [ ] `ludo/bots/greedy_bot.py`: Create a bot with a simple evaluation function.
-    -   [ ] The evaluation should prioritize moves in this order:
+    -   [x] `ludo/bots/greedy_bot.py`: Create a bot with a simple evaluation function.
+    -   [x] The evaluation should prioritize moves in this order:
         1.  Move a piece into the `HOME` position.
         2.  Capture an opponent's piece.
         3.  Move a piece out of the `YARD`.
         4.  Move the piece that is furthest along the track.
 -   **Task 2.4: Test Bot Logic**
-    -   [ ] `tests/test_bots.py`: Write tests to ensure bots make predictable choices in specific scenarios.
+    -   [x] `tests/test_bots.py`: Write tests to ensure bots make predictable choices in specific scenarios.
 
 ---
 
