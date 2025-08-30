@@ -20,7 +20,7 @@ class Piece:
         return PieceData(
             id=self.id,
             color=self.color.value,
-            state=self.state.value,
+            state=self.state.name,
             position=self.position,
         )
 
@@ -30,6 +30,6 @@ class Piece:
         return cls(
             id=data.id,
             color=PlayerColor(data.color),
-            state=PieceState(data.state),
+            state=PieceState[data.state],
             position=data.position,
         )
