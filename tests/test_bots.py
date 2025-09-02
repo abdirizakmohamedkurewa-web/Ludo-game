@@ -81,7 +81,7 @@ def test_random_bot():
 def test_greedy_bot_chooses_win():
     """Test that the bot chooses a move that wins the game."""
     # Player RED has one piece close to home, another on the track
-    p1 = Player(PlayerColor.RED)
+    p1 = Player(PlayerColor.RED, role="greedy")
     p1.pieces[0].state = PieceState.HOME_COLUMN
     p1.pieces[0].position = 56 # Needs a 1 to win
     p1.pieces[1].state = PieceState.TRACK
@@ -105,13 +105,13 @@ def test_greedy_bot_chooses_win():
 def test_greedy_bot_chooses_capture():
     """Test that the bot chooses a move that captures an opponent."""
     # Player RED can either capture a GREEN piece or move another piece
-    p1 = Player(PlayerColor.RED)
+    p1 = Player(PlayerColor.RED, role="greedy")
     p1.pieces[0].state = PieceState.TRACK
     p1.pieces[0].position = 10 # Will land on 14
     p1.pieces[1].state = PieceState.TRACK
     p1.pieces[1].position = 20 # Moves to 24
 
-    p2 = Player(PlayerColor.GREEN)
+    p2 = Player(PlayerColor.GREEN, role="greedy")
     p2.pieces[0].state = PieceState.TRACK
     p2.pieces[0].position = 14 # Capture target
 
@@ -127,7 +127,7 @@ def test_greedy_bot_chooses_capture():
 
 def test_greedy_bot_chooses_enter_from_yard():
     """Test that the bot chooses to move a piece from the yard on a 6."""
-    p1 = Player(PlayerColor.RED)
+    p1 = Player(PlayerColor.RED, role="greedy")
     p1.pieces[0].state = PieceState.YARD
     p1.pieces[1].state = PieceState.TRACK
     p1.pieces[1].position = 10
@@ -144,7 +144,7 @@ def test_greedy_bot_chooses_enter_from_yard():
 
 def test_greedy_bot_chooses_furthest_piece():
     """Test that the bot chooses to move the piece furthest on the track."""
-    p1 = Player(PlayerColor.RED)
+    p1 = Player(PlayerColor.RED, role="greedy")
     p1.pieces[0].state = PieceState.TRACK
     p1.pieces[0].position = 10 # less far
     p1.pieces[1].state = PieceState.TRACK
@@ -165,17 +165,17 @@ def test_greedy_bot_capture_tie_break():
     Test that the bot chooses the capture that moves its piece further.
     """
     # Player RED can capture one of two pieces
-    p1 = Player(PlayerColor.RED)
+    p1 = Player(PlayerColor.RED, role="greedy")
     p1.pieces[0].state = PieceState.TRACK
     p1.pieces[0].position = 10 # Will land on 14
     p1.pieces[1].state = PieceState.TRACK
     p1.pieces[1].position = 20 # Will land on 24
 
     # Opponent pieces to be captured
-    p2 = Player(PlayerColor.GREEN)
+    p2 = Player(PlayerColor.GREEN, role="greedy")
     p2.pieces[0].state = PieceState.TRACK
     p2.pieces[0].position = 14 # Target 1
-    p3 = Player(PlayerColor.BLUE)
+    p3 = Player(PlayerColor.BLUE, role="greedy")
     p3.pieces[0].state = PieceState.TRACK
     p3.pieces[0].position = 24 # Target 2
 

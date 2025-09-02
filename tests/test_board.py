@@ -4,11 +4,19 @@ from ludo.dice import Dice
 from ludo.move import move_piece
 from ludo.utils.constants import PieceState, PlayerColor
 from ludo.board import START_SQUARES
+from ludo.player import Player
+from ludo.bots.human_bot import HumanBot
+
 
 @pytest.fixture
 def game():
     """Returns a game instance with a fresh state."""
-    g = Game(players=["red", "green"], dice=Dice())
+    players = [
+        Player(color=PlayerColor.RED, role="human"),
+        Player(color=PlayerColor.GREEN, role="human"),
+    ]
+    strategies = [HumanBot(), HumanBot()]
+    g = Game(players=players, strategies=strategies, dice=Dice())
     # Let's work with the RED player for consistency
     g.state.current_player_index = 0
     return g

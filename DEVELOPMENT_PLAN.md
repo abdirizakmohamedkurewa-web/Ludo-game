@@ -97,17 +97,17 @@ This document provides a detailed, step-by-step development plan for the Python 
 **Goal:** Allow users to save a game in progress and load it later.
 
 -   **Task 3.1: Design Serialization Format**
-    -   [ ] Use JSON for human-readable save files.
-    -   [ ] Define the schema for `GameState`: include player positions, current turn, dice seed, etc.
-    -   [ ] Add a `schema_version` field for future-proofing.
+    -   [x] Use JSON for human-readable save files.
+    -   [x] Define the schema for `GameState`: include player positions, current turn, dice seed, etc.
+    -   [x] Add a `schema_version` field for future-proofing.
 -   **Task 3.2: Implement Save Logic**
-    -   [ ] `ludo/persistence.py`: Create a `save_game(state, filepath)` function.
-    -   [ ] Convert the `GameState` dataclass to a dictionary and write to a JSON file.
+    -   [x] `ludo/persistence.py`: Create a `save_game(state, filepath)` function.
+    -   [x] Convert the `GameState` dataclass to a dictionary and write to a JSON file.
 -   **Task 3.3: Implement Load Logic**
-    -   [ ] `ludo/persistence.py`: Create a `load_game(filepath)` function.
-    -   [ ] Read the JSON file and reconstruct the `GameState` object.
+    -   [x] `ludo/persistence.py`: Create a `load_game(filepath)` function.
+    -   [x] Read the JSON file and reconstruct the `GameState` object.
 -   **Task 3.4: Integrate into CLI**
-    -   [ ] Add CLI commands to save and load games (e.g., an in-game command or startup flags).
+    -   [x] Add CLI commands to save and load games (e.g., an in-game command or startup flags).
 
 ---
 

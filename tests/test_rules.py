@@ -3,12 +3,19 @@ from ludo.game import Game
 from ludo.dice import Dice
 from ludo.rules import Rules
 from ludo.move import move_piece
-from ludo.utils.constants import PieceState
+from ludo.utils.constants import PieceState, PlayerColor
+from ludo.player import Player
+from ludo.bots.human_bot import HumanBot
 
 @pytest.fixture
 def game():
     """Returns a game instance with a fresh state."""
-    return Game(players=["red", "green"], dice=Dice())
+    players = [
+        Player(color=PlayerColor.RED, role="human"),
+        Player(color=PlayerColor.GREEN, role="human"),
+    ]
+    strategies = [HumanBot(), HumanBot()]
+    return Game(players=players, strategies=strategies, dice=Dice())
 
 def test_enter_from_yard_on_roll_6(game):
     """

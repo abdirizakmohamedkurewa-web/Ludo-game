@@ -7,10 +7,15 @@ from ludo.piece import Piece
 from ludo.utils.constants import PlayerColor, PieceState
 
 
+from ludo.bots.human_bot import HumanBot
+
+
 def test_move_piece_on_track():
     # Arrange
     dice = Dice(seed=1)  # Use a fixed seed for predictability
-    game = Game(players=['human'], dice=dice)
+    players = [Player(color=PlayerColor.RED, role="human")]
+    strategies = [HumanBot()]
+    game = Game(players=players, strategies=strategies, dice=dice)
 
     # Get the player created by the Game instance
     player = game.state.players[0]
@@ -34,7 +39,9 @@ def test_move_piece_on_track():
 def test_move_piece_into_home_column():
     # Arrange
     dice = Dice(seed=1)
-    game = Game(players=['human'], dice=dice)
+    players = [Player(color=PlayerColor.RED, role="human")]
+    strategies = [HumanBot()]
+    game = Game(players=players, strategies=strategies, dice=dice)
     player = game.state.players[0]
     assert player.color == PlayerColor.RED
 
@@ -58,7 +65,9 @@ def test_move_piece_into_home_column():
 def test_move_piece_within_home_column():
     # Arrange
     dice = Dice(seed=1)
-    game = Game(players=['human'], dice=dice)
+    players = [Player(color=PlayerColor.RED, role="human")]
+    strategies = [HumanBot()]
+    game = Game(players=players, strategies=strategies, dice=dice)
     player = game.state.players[0]
     assert player.color == PlayerColor.RED
 
@@ -81,7 +90,9 @@ def test_move_piece_within_home_column():
 def test_move_piece_to_home():
     # Arrange
     dice = Dice(seed=1)
-    game = Game(players=['human'], dice=dice)
+    players = [Player(color=PlayerColor.RED, role="human")]
+    strategies = [HumanBot()]
+    game = Game(players=players, strategies=strategies, dice=dice)
     player = game.state.players[0]
     assert player.color == PlayerColor.RED
 
@@ -104,7 +115,12 @@ def test_move_piece_to_home():
 def test_capture_opponent_piece():
     # Arrange
     dice = Dice(seed=1)
-    game = Game(players=['human', 'human'], dice=dice)
+    players = [
+        Player(color=PlayerColor.RED, role="human"),
+        Player(color=PlayerColor.GREEN, role="human"),
+    ]
+    strategies = [HumanBot(), HumanBot()]
+    game = Game(players=players, strategies=strategies, dice=dice)
     red_player = game.state.players[0]
     green_player = game.state.players[1]
 
@@ -132,7 +148,12 @@ def test_capture_opponent_piece():
 def test_no_capture_on_safe_square():
     # Arrange
     dice = Dice(seed=1)
-    game = Game(players=['human', 'human'], dice=dice)
+    players = [
+        Player(color=PlayerColor.RED, role="human"),
+        Player(color=PlayerColor.GREEN, role="human"),
+    ]
+    strategies = [HumanBot(), HumanBot()]
+    game = Game(players=players, strategies=strategies, dice=dice)
     red_player = game.state.players[0]
     green_player = game.state.players[1]
 
