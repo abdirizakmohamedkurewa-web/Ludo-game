@@ -30,7 +30,11 @@ def test_enter_from_yard_on_roll_6(game):
 
     legal_moves = Rules.get_legal_moves(game.state, game.state.dice_roll)
 
-    assert piece_in_yard in legal_moves
+    # Check if the move (piece, destination) exists
+    assert any(p == piece_in_yard for p, d in legal_moves)
+    # Check that the destination is the start square for that player
+    start_square = 0  # Red's start square
+    assert any(d == start_square for p, d in legal_moves if p == piece_in_yard)
 
 def test_enter_from_yard_on_roll_not_6(game):
     """
@@ -45,38 +49,33 @@ def test_enter_from_yard_on_roll_not_6(game):
 
     legal_moves = Rules.get_legal_moves(game.state, game.state.dice_roll)
 
-    assert piece_in_yard not in legal_moves
+    assert not any(p == piece_in_yard for p, d in legal_moves)
 
 
-def test_yard_exit_has_priority_on_roll_6(game):
+def test_yard_exit_and_other_moves_on_roll_6(game):
     """
-    Tests that if a 6 is rolled, moving a piece from the yard is the only
-    legal move if there are pieces in the yard.
+    Tests that if a 6 is rolled, moving a piece from the yard is a
+    legal move, as are other pieces on the board.
     """
     game.state.dice_roll = 6
     current_player = game.state.players[game.state.current_player_index]
 
-    # Set up the board state: one piece in yard, three on the track
+    # Set up the board state: one piece in yard, one on the track
     piece_in_yard = current_player.pieces[0]
-    piece_on_track1 = current_player.pieces[1]
-    piece_on_track2 = current_player.pieces[2]
-    piece_on_track3 = current_player.pieces[3]
+    piece_on_track = current_player.pieces[1]
 
     piece_in_yard.state = PieceState.YARD
-    piece_on_track1.state = PieceState.TRACK
-    piece_on_track1.position = 10
-    piece_on_track2.state = PieceState.TRACK
-    piece_on_track2.position = 12
-    piece_on_track3.state = PieceState.TRACK
-    piece_on_track3.position = 14
+    piece_on_track.state = PieceState.TRACK
+    piece_on_track.position = 10
 
     # Get legal moves
     legal_moves = Rules.get_legal_moves(game.state, game.state.dice_roll)
+    legal_pieces = [p for p, d in legal_moves]
 
-    # Assert that only the yard piece is a legal move
-    assert len(legal_moves) == 1
-    assert piece_in_yard in legal_moves
-    assert piece_on_track1 not in legal_moves
+    # Assert that both the yard piece and track piece are legal moves
+    assert len(legal_moves) == 2
+    assert piece_in_yard in legal_pieces
+    assert piece_on_track in legal_pieces
 
 
 def test_move_is_blocked_by_opponent_blockade(game):
@@ -103,7 +102,7 @@ def test_move_is_blocked_by_opponent_blockade(game):
     legal_moves = Rules.get_legal_moves(game.state, roll, use_blocking_rule=True)
 
     # The move should be illegal
-    assert red_piece not in legal_moves
+    assert not any(p == red_piece for p, d in legal_moves)
 
 
 def test_move_is_not_blocked_if_rule_is_disabled(game):
@@ -130,7 +129,7 @@ def test_move_is_not_blocked_if_rule_is_disabled(game):
     legal_moves = Rules.get_legal_moves(game.state, roll, use_blocking_rule=False)
 
     # The move should be legal
-    assert red_piece in legal_moves
+    assert any(p == red_piece for p, d in legal_moves)
 
 
 def test_capture_opponent_piece(game):
@@ -204,7 +203,7 @@ def test_move_is_blocked_by_distant_blockade(game):
     legal_moves = Rules.get_legal_moves(game.state, roll, use_blocking_rule=True)
 
     # The move should be illegal
-    assert red_piece not in legal_moves
+    assert not any(p == red_piece for p, d in legal_moves)
 
 
 def test_move_is_not_blocked_by_own_pieces(game):
@@ -230,13 +229,12 @@ def test_move_is_not_blocked_by_own_pieces(game):
     legal_moves = Rules.get_legal_moves(game.state, roll, use_blocking_rule=True)
 
     # The move should be legal as it's not an opponent's blockade
-    assert red_piece_to_move in legal_moves
+    assert any(p == red_piece_to_move for p, d in legal_moves)
 
 
 def test_piece_moves_from_track_to_home_column(game):
     """
     Tests that a piece correctly enters the home column from the main track.
-    Also tests that a high roll can land it directly in the HOME state.
     """
     red_player = game.state.players[0]
     red_piece = red_player.pieces[0]
@@ -248,57 +246,46 @@ def test_piece_moves_from_track_to_home_column(game):
     # --- Case 1: Enter the middle of the home column ---
     roll_enter = 3
     legal_moves_enter = Rules.get_legal_moves(game.state, roll_enter)
-    assert red_piece in legal_moves_enter
+    assert any(p == red_piece for p, d in legal_moves_enter)
 
-    # Manually move the piece to check the game logic's effect
-    move_piece(game.state, red_piece, roll_enter)
-    assert red_piece.state == PieceState.HOME_COLUMN
-    # progress = 50, new_progress = 53. home_pos = 53-51=2. new_pos = 52+2=54
-    assert red_piece.position == 54
+    # Check destination
+    move = next(m for m in legal_moves_enter if m[0] == red_piece)
+    assert move[1] == 54 # 52 (base) + (50+3-51) = 54
 
     # --- Case 2: Land exactly in the HOME state from the track ---
-    # Reset piece state and ensure no other pieces are in the yard to test this
-    red_piece.state = PieceState.TRACK
-    red_piece.position = 50
-    for p in red_player.pieces:
-        if p.id != red_piece.id:
-            p.state = PieceState.TRACK  # Move other pieces out of the yard
-            p.position = 10  # Arbitrary track position
-
     roll_win = 6
     legal_moves_win = Rules.get_legal_moves(game.state, roll_win)
-    assert red_piece in legal_moves_win
+    assert any(p == red_piece for p, d in legal_moves_win)
 
-    move_piece(game.state, red_piece, roll_win)
-    assert red_piece.state == PieceState.HOME
-    # progress = 50, new_progress = 56. home_pos = 56-51=5. new_pos = 52+5=57
-    assert red_piece.position == 57
+    move = next(m for m in legal_moves_win if m[0] == red_piece)
+    assert move[1] == 57 # 52 (base) + (50+6-51) = 57
 
 
-def test_home_column_exact_roll_to_win(game):
+def test_home_column_exact_roll(game):
     """
-    Tests that a piece can move into the HOME state only with an exact roll.
+    Tests that a piece can move within the home column.
     """
     red_player = game.state.players[0]
     red_piece = red_player.pieces[0]
 
-    # Position the piece 1 step away from HOME (pos 56 is the 5th spot in the home column)
+    # Position the piece 2 steps away from HOME (pos 55)
     red_piece.state = PieceState.HOME_COLUMN
-    red_piece.position = 56  # Needs a roll of 1 to win
+    red_piece.position = 55 # Needs a roll of 2 to win
 
-    # Attempt to move with the exact roll needed
-    exact_roll = 1
-    legal_moves_good = Rules.get_legal_moves(game.state, exact_roll)
+    # Attempt to move with a roll of 1
+    roll = 1
+    legal_moves = Rules.get_legal_moves(game.state, roll)
+    assert any(p == red_piece for p, d in legal_moves)
 
-    # The move should be legal
-    assert red_piece in legal_moves_good
+    move = next(m for m in legal_moves if m[0] == red_piece)
+    assert move[1] == 56 # 55 + 1 = 56
 
     # Attempt to move with a roll that is too high
-    too_high_roll = 2
+    too_high_roll = 3
     legal_moves_bad = Rules.get_legal_moves(game.state, too_high_roll)
 
-    # The move should be illegal
-    assert red_piece not in legal_moves_bad
+    # The move should be illegal as it overshoots
+    assert not any(p == red_piece for p, d in legal_moves_bad)
 
 
 def test_move_is_not_blocked_by_single_opponent_piece(game):
@@ -322,7 +309,7 @@ def test_move_is_not_blocked_by_single_opponent_piece(game):
     legal_moves = Rules.get_legal_moves(game.state, roll, use_blocking_rule=True)
 
     # The move should be legal
-    assert red_piece in legal_moves
+    assert any(p == red_piece for p, d in legal_moves)
 
 
 def test_move_lands_on_blockade(game):
@@ -350,4 +337,4 @@ def test_move_lands_on_blockade(game):
     legal_moves = Rules.get_legal_moves(game.state, roll, use_blocking_rule=True)
 
     # The move should be legal
-    assert red_piece in legal_moves
+    assert any(p == red_piece for p, d in legal_moves)

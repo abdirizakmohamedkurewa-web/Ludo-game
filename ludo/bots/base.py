@@ -2,8 +2,7 @@
 Base classes for bot strategies.
 """
 from typing import List, Protocol, runtime_checkable
-# Use forward references (strings) to avoid circular imports
-from ludo.piece import Piece
+from ludo.move import Move
 from ludo.state import GameState
 
 
@@ -14,15 +13,15 @@ class Strategy(Protocol):
     A strategy is responsible for choosing a move from a list of legal options.
     """
 
-    def choose_move(self, legal_moves: List[Piece], game_state: GameState) -> Piece:
+    def choose_move(self, legal_moves: List[Move], game_state: GameState) -> Move:
         """
-        Selects a piece to move from the list of legal moves.
+        Selects a move from the list of legal moves.
 
         Args:
-            legal_moves: A list of `Piece` objects that can be legally moved.
+            legal_moves: A list of `(Piece, destination)` tuples.
             game_state: The current `GameState` of the game.
 
         Returns:
-            The `Piece` object representing the chosen move.
+            The chosen `(Piece, destination)` tuple.
         """
         ...

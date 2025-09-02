@@ -61,7 +61,8 @@ class Game:
 
         # 5. Choose a move using the current player's strategy
         current_strategy = self.strategies[self.state.current_player_index]
-        piece_to_move = current_strategy.choose_move(legal_moves, self.state)
+        chosen_move = current_strategy.choose_move(legal_moves, self.state)
+        piece_to_move, _ = chosen_move
         move_piece(self.state, piece_to_move, roll)
 
         # 6. Check for win condition

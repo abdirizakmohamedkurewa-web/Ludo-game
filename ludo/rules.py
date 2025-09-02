@@ -4,6 +4,7 @@ Move validation, capture rules, safe squares.
 from typing import List
 from ludo.state import GameState
 from ludo.piece import Piece
+from ludo.move import Move
 from ludo.utils.constants import PieceState, PlayerColor
 from ludo.board import (
     HOME_COLUMN_LENGTH,
@@ -15,53 +16,54 @@ from ludo.board import (
 class Rules:
     """Contains all the game logic and rules."""
     @staticmethod
-    def get_legal_moves(game_state: GameState, roll: int, use_blocking_rule: bool = True) -> List[Piece]:
+    def get_legal_moves(game_state: GameState, roll: int, use_blocking_rule: bool = True) -> List[Move]:
         """
         Determines which of the current player's pieces have legal moves.
-        - If a 6 is rolled, priority is given to moving a piece from the yard.
-        - Pieces on the track can move if they don't overshoot the home column.
-        - Pieces in the home column can only move if the roll is exact.
+        Returns a list of (piece, destination) tuples.
         """
         player = game_state.players[game_state.current_player_index]
-        legal_moves = []
+        legal_moves: List[Move] = []
+        start_square = START_SQUARES[player.color]
 
-        # Rule: If a 6 is rolled, moving a piece from the yard takes priority
+        # Rule: If a 6 is rolled, moving a piece from the yard is a legal move
         if roll == 6:
             yard_pieces = [p for p in player.pieces if p.state == PieceState.YARD]
             if yard_pieces:
-                return yard_pieces
+                # The destination is the player's start square
+                legal_moves.append((yard_pieces[0], start_square))
 
         # Check for legal moves for pieces on the track or in the home column
         for piece in player.pieces:
             if piece.state == PieceState.TRACK:
-                start_square = START_SQUARES[piece.color]
-                progress = (piece.position - start_square + TRACK_LENGTH) % TRACK_LENGTH
-                new_progress = progress + roll
-                # A piece's total journey is 51 steps on the track + 6 in the home column
-                if new_progress < TRACK_LENGTH - 1 + HOME_COLUMN_LENGTH:
-                    # Check for blocks if the rule is enabled
-                    path_is_clear = True
-                    if use_blocking_rule:
-                        # Check squares the piece would pass *over*
-                        for i in range(1, roll):
-                            intermediate_square = (piece.position + i) % TRACK_LENGTH
-                            if Rules.is_square_blocked_by_opponent(
-                                intermediate_square, player.color, game_state
-                            ):
-                                path_is_clear = False
-                                break
+                current_progress = (piece.position - start_square + TRACK_LENGTH) % TRACK_LENGTH
+                new_progress = current_progress + roll
 
-                    if path_is_clear:
-                        legal_moves.append(piece)
+                # Check for blocks if the rule is enabled
+                path_is_clear = True
+                if use_blocking_rule:
+                    for i in range(1, roll): # Check intermediate squares
+                        intermediate_square = (piece.position + i) % TRACK_LENGTH
+                        if Rules.is_square_blocked_by_opponent(intermediate_square, player.color, game_state):
+                            path_is_clear = False
+                            break
+                if not path_is_clear:
+                    continue
+
+                # A piece's total journey is 51 steps on track + 6 in home column
+                if new_progress < 51: # Stays on main track
+                    destination = (piece.position + roll) % TRACK_LENGTH
+                    legal_moves.append((piece, destination))
+                elif new_progress < 51 + HOME_COLUMN_LENGTH: # Enters home column
+                    home_col_pos = new_progress - 51
+                    destination = 52 + home_col_pos # 52 is the base for home column positions
+                    legal_moves.append((piece, destination))
 
             elif piece.state == PieceState.HOME_COLUMN:
-                # The piece's position in the home column (0-4, since 5 is HOME)
                 current_home_pos = piece.position - 52
-                # The final position in the home column is at index 5
-                final_home_pos = HOME_COLUMN_LENGTH - 1
-                needed_roll = final_home_pos - current_home_pos
-                if roll == needed_roll:
-                    legal_moves.append(piece)
+                new_home_pos = current_home_pos + roll
+                if new_home_pos < HOME_COLUMN_LENGTH:
+                    destination = 52 + new_home_pos
+                    legal_moves.append((piece, destination))
 
         return legal_moves
 
