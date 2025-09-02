@@ -257,22 +257,71 @@ def main():
                         roll = game.dice.roll()
                         game.state.dice_roll = roll
                         legal_moves = Rules.get_legal_moves(game.state, roll)
-                        selected_piece = None # Reset selection on new roll
+                        selected_piece = None  # Reset selection on new roll
                         print(f"Player rolled a {roll}. Legal moves: {[(m[0].id, m[1]) for m in legal_moves]}")
 
-                # 2. Handle Piece Selection
+                        # If there are no legal moves, the turn might end
+                        if not legal_moves:
+                            print("No legal moves available.")
+                            if roll != 6:
+                                game.next_player()
+                            # Reset the roll to allow the current (or next) player to roll again.
+                            game.state.dice_roll = None
+
+                # 2. Handle Piece Interaction (Selection and Movement)
                 elif game.state.dice_roll is not None and legal_moves:
+                    mouse_pos = event.pos
                     current_player = game.state.players[game.state.current_player_index]
-                    movable_pieces = [move[0] for move in legal_moves]
-                    for piece in current_player.pieces:
-                        if piece in movable_pieces:
-                            pos = get_piece_pixel_pos(current_player, piece)
-                            if pos:
-                                piece_radius = GRID_SIZE // 2 - 4
-                                if pygame.Rect(pos[0]-piece_radius, pos[1]-piece_radius, piece_radius*2, piece_radius*2).collidepoint(event.pos):
-                                    selected_piece = piece
-                                    print(f"Selected piece {piece.id}")
-                                    break # Select only one piece
+                    moved_piece = False
+
+                    # --- A. Is a piece selected? If so, try to move it. ---
+                    if selected_piece:
+                        destinations = [dest for p, dest in legal_moves if p.id == selected_piece.id]
+
+                        for dest_pos in destinations:
+                            coords = get_pos_pixel_coords(current_player.color, dest_pos)
+                            if coords and pygame.Rect(coords[0], coords[1], GRID_SIZE, GRID_SIZE).collidepoint(mouse_pos):
+                                # Execute the move
+                                roll = game.state.dice_roll
+                                move_piece(game.state, selected_piece, roll)
+                                print(f"Moved piece {selected_piece.id} to destination {dest_pos}")
+
+                                # Check for win condition
+                                if game.state.is_game_over:
+                                    print(f"Player {current_player.color.name} has won!")
+                                    # A more robust game over state could be handled here
+
+                                # Advance turn if roll was not a 6
+                                if roll != 6:
+                                    game.next_player()
+
+                                # Reset state for the next turn/action
+                                legal_moves = []
+                                selected_piece = None
+                                game.state.dice_roll = None
+                                moved_piece = True
+                                break
+
+                        # If the click was not on a valid move, deselect the piece so the user can re-select.
+                        if not moved_piece:
+                            print("Invalid destination clicked. Deselecting piece.")
+                            selected_piece = None
+
+                    # --- B. If no piece was moved, try to select a new piece. ---
+                    if not moved_piece:
+                        movable_pieces = [move[0] for move in legal_moves]
+                        for piece in current_player.pieces:
+                            if piece in movable_pieces:
+                                pos = get_piece_pixel_pos(current_player, piece)
+                                if pos:
+                                    piece_radius = GRID_SIZE // 2 - 4
+                                    piece_rect = pygame.Rect(pos[0]-piece_radius, pos[1]-piece_radius, piece_radius*2, piece_radius*2)
+                                    if piece_rect.collidepoint(mouse_pos):
+                                        # If the user clicked away from a destination, selected_piece is now None,
+                                        # so this logic will run, allowing them to select another piece.
+                                        selected_piece = piece
+                                        print(f"Selected piece {piece.id}")
+                                        break
 
         # Drawing code will go here
         screen.fill(WHITE)
