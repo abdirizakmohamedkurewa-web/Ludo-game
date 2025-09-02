@@ -41,6 +41,7 @@ def load_game(filepath: Union[str, Path]) -> GameState:
     players_data = [
         PlayerData(
             color=p["color"],
+            role=p["role"],
             pieces=[
                 PieceData(
                     id=piece["id"],
