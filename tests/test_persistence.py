@@ -9,12 +9,21 @@ from ludo.persistence import save_game, load_game
 from ludo.utils.constants import PlayerColor, PieceState
 
 
+from ludo.player import Player
+from ludo.bots.human_bot import HumanBot
+
+
 def test_save_game(tmp_path: Path):
     """
     Tests that a game state can be saved to a JSON file.
     """
     # 1. Create a GameState
-    game = Game(players=["red", "green"], dice=Dice(seed=123))
+    players = [
+        Player(color=PlayerColor.RED, role="human"),
+        Player(color=PlayerColor.GREEN, role="human"),
+    ]
+    strategies = [HumanBot(), HumanBot()]
+    game = Game(players=players, strategies=strategies, dice=Dice(seed=123))
     state = game.state
     state.dice_roll = 5
     state.current_player_index = 1
@@ -59,7 +68,12 @@ def test_save_and_load_game(tmp_path: Path):
     resulting in an identical state.
     """
     # 1. Create an original GameState with some non-default values
-    game = Game(players=["blue", "yellow"], dice=Dice(seed=456))
+    players = [
+        Player(color=PlayerColor.BLUE, role="human"),
+        Player(color=PlayerColor.YELLOW, role="human"),
+    ]
+    strategies = [HumanBot(), HumanBot()]
+    game = Game(players=players, strategies=strategies, dice=Dice(seed=456))
     original_state = game.state
     original_state.dice_roll = 4
     original_state.current_player_index = 1

@@ -2,6 +2,8 @@ import pytest
 from ludo.game import Game
 from ludo.dice import Dice
 from ludo.utils.constants import PlayerColor, PieceState
+from ludo.player import Player
+from ludo.bots.human_bot import HumanBot
 
 
 def test_game_initialization():
@@ -9,7 +11,14 @@ def test_game_initialization():
     Tests that the game is initialized with the correct
     number of players and pieces in the correct initial state.
     """
-    game = Game(players=["red", "green", "yellow", "blue"], dice=Dice())
+    players = [
+        Player(color=PlayerColor.RED, role="human"),
+        Player(color=PlayerColor.GREEN, role="human"),
+        Player(color=PlayerColor.YELLOW, role="human"),
+        Player(color=PlayerColor.BLUE, role="human"),
+    ]
+    strategies = [HumanBot(), HumanBot(), HumanBot(), HumanBot()]
+    game = Game(players=players, strategies=strategies, dice=Dice())
     state = game.state
 
     # Check for 4 players
@@ -28,10 +37,18 @@ def test_game_initialization():
             assert piece.position == -1
 
 
+from ludo.bots.random_bot import RandomBot
+
+
 @pytest.fixture
 def game_two_players():
     """Returns a game instance with two players for turn-based tests."""
-    return Game(players=["red", "green"], dice=Dice(seed=1))
+    players = [
+        Player(color=PlayerColor.RED, role="random"),
+        Player(color=PlayerColor.GREEN, role="random"),
+    ]
+    strategies = [RandomBot(), RandomBot()]
+    return Game(players=players, strategies=strategies, dice=Dice(seed=1))
 
 
 def test_extra_turn_on_roll_6(game_two_players):
