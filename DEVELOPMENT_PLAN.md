@@ -120,9 +120,9 @@ This document provides a detailed, step-by-step development plan for the Python 
     -   [x] Draw the Ludo board, including squares, yards, and home columns.
     -   [x] Draw pieces at their correct positions based on the `GameState`.
 -   **Task 4.2: Game State Visualization**
-    -   [ ] Display the current player's turn.
-    -   [ ] Show the result of a dice roll.
-    -   [ ] Highlight legal moves when a piece is selected.
+    -   [x] Display the current player's turn.
+    -   [x] Show the result of a dice roll.
+    -   [x] Highlight legal moves when a piece is selected.
 -   **Task 4.3: User Interaction**
     -   [ ] Implement mouse clicks to roll the dice.
     -   [ ] Implement mouse clicks to select a piece to move.
