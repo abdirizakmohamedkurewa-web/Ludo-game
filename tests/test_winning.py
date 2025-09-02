@@ -32,11 +32,11 @@ def test_piece_requires_exact_roll_to_enter_home(game):
 
     # A roll of 2 should be legal
     legal_moves_2 = Rules.get_legal_moves(game.state, 2)
-    assert piece in legal_moves_2
+    assert any(p == piece for p, d in legal_moves_2)
 
-    # A roll of 3 should be illegal
+    # A roll of 3 should be illegal (overshoots)
     legal_moves_3 = Rules.get_legal_moves(game.state, 3)
-    assert piece not in legal_moves_3
+    assert not any(p == piece for p, d in legal_moves_3)
 
 def test_move_overshooting_home_is_illegal(game):
     """
@@ -45,21 +45,19 @@ def test_move_overshooting_home_is_illegal(game):
     current_player = game.state.players[0]
     piece = current_player.pieces[0]
 
-    # Position the piece on the track, 3 steps from its home entry
+    # Position the piece on the track, 2 steps from its home entry
     piece.state = PieceState.TRACK
-    piece.position = 51 - 2 # 2 steps before home entry square for RED
+    piece.position = 51 - 2 # 2 steps before home entry square for RED (pos 49)
 
     # A roll of 5 should be legal (lands inside home column)
-    # 2 steps to entry, 3 steps into column. Progress = 49 + 5 = 54. home_pos = 3. OK.
+    # new_progress = 49 + 5 = 54. home_col_pos = 54-51 = 3. Legal.
     legal_moves_5 = Rules.get_legal_moves(game.state, 5)
-    assert piece in legal_moves_5
+    assert any(p == piece for p, d in legal_moves_5)
 
     # A roll of 9 should be illegal (overshoots)
-    # 2 steps to entry, 7 steps into column. Progress = 49 + 9 = 58. home_pos = 7. Not OK.
-    # My rule is `new_progress < TRACK_LENGTH - 1 + HOME_COLUMN_LENGTH`
-    # `51 + 6 = 57`. `58 < 57` is false. So it should be illegal.
+    # new_progress = 49 + 9 = 58. home_col_pos = 58-51 = 7. Illegal.
     legal_moves_9 = Rules.get_legal_moves(game.state, 9)
-    assert piece not in legal_moves_9
+    assert not any(p == piece for p, d in legal_moves_9)
 
 def test_player_wins_when_all_pieces_are_home(game):
     """

@@ -1,10 +1,13 @@
 """
 Handles the logic for applying a move to a piece and updating the game state.
 """
+from typing import Tuple
 from ludo.state import GameState
 from ludo.piece import Piece
 from ludo.utils.constants import PieceState
 from ludo.board import START_SQUARES, TRACK_LENGTH, HOME_COLUMN_LENGTH, SAFE_SQUARES
+
+Move = Tuple[Piece, int] # A move is a piece and its destination position
 
 def move_piece(game_state: GameState, piece: Piece, roll: int):
     """Moves a piece according to the given dice roll and updates the game state."""
