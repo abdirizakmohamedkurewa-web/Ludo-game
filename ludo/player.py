@@ -13,6 +13,7 @@ from ludo.serialization import PlayerData
 class Player:
     """Represents a player in the game."""
     color: PlayerColor
+    role: str
     pieces: List[Piece] = field(default_factory=list)
 
     def __post_init__(self):
@@ -23,6 +24,7 @@ class Player:
         """Converts the Player to a serializable PlayerData object."""
         return PlayerData(
             color=self.color.value,
+            role=self.role,
             pieces=[p.to_serializable() for p in self.pieces],
         )
 
@@ -31,5 +33,6 @@ class Player:
         """Creates a Player from a serializable PlayerData object."""
         return cls(
             color=PlayerColor(data.color),
+            role=data.role,
             pieces=[Piece.from_serializable(p) for p in data.pieces],
         )

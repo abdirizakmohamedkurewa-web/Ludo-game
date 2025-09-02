@@ -1,7 +1,7 @@
 """
 Game orchestration (turns, state machine).
 """
-from typing import Sequence
+from typing import Sequence, Optional
 from ludo.dice import Dice
 from ludo.state import GameState
 from ludo.player import Player
@@ -9,24 +9,22 @@ from ludo.piece import Piece
 from ludo.rules import Rules
 from ludo.utils.constants import PlayerColor, PieceState
 from ludo.move import move_piece
+from ludo.bots.base import Strategy
+from ludo.persistence import save_game
 
 
 class Game:
     """Orchestrates a game of Ludo."""
-    def __init__(self, players: Sequence[str], dice: Dice, three_six_forfeit: bool = True, use_blocking_rule: bool = True):
+    def __init__(self, players: Sequence[Player], strategies: Sequence[Strategy], dice: Dice, state: Optional[GameState] = None, three_six_forfeit: bool = True, use_blocking_rule: bool = True):
         self.dice = dice
+        self.strategies = strategies
         self.three_six_forfeit = three_six_forfeit
         self.use_blocking_rule = use_blocking_rule
 
-        colors = [PlayerColor.RED, PlayerColor.GREEN, PlayerColor.YELLOW, PlayerColor.BLUE]
-
-        player_objects = []
-        for i, role in enumerate(players):
-            if i < len(colors):
-                # NOTE: Role ("human", "random", etc.) is ignored for now.
-                player_objects.append(Player(color=colors[i]))
-
-        self.state = GameState(players=player_objects, dice_seed=self.dice.seed)
+        if state:
+            self.state = state
+        else:
+            self.state = GameState(players=players, dice_seed=self.dice.seed)
 
     def play_turn(self, roll: int):
         """
@@ -55,13 +53,15 @@ class Game:
 
         # 4. Handle case with no legal moves
         if not legal_moves:
+            print("No legal moves available.")
             if roll != 6:
                 self.next_player()
             # If roll is 6, player keeps the turn for another roll.
             return
 
-        # 5. Choose a move (for now, always the first legal one)
-        piece_to_move = legal_moves[0]
+        # 5. Choose a move using the current player's strategy
+        current_strategy = self.strategies[self.state.current_player_index]
+        piece_to_move = current_strategy.choose_move(legal_moves, self.state)
         move_piece(self.state, piece_to_move, roll)
 
         # 6. Check for win condition
@@ -76,24 +76,52 @@ class Game:
         """Runs the game loop for the Command-Line Interface."""
         while not self.state.is_game_over:
             player = self.state.players[self.state.current_player_index]
-            print(f"\n--- {player.color.value}'s Turn ---")
+            print(f"\n--- {player.color.value}'s Turn ({player.role}) ---")
 
-            roll = self.dice.roll()
-            print(f"Rolled a {roll}")
+            if player.role == "human":
+                command_str = input("Enter command (roll, save <file>, quit): ")
+                command = command_str.strip().split()
+            else:
+                # Bots always roll
+                print(f"Bot ({player.role}) is thinking...")
+                command = ["roll"]
 
-            old_player_index = self.state.current_player_index
-            self.play_turn(roll)
+            action = command[0].lower() if command else ""
 
-            if self.state.is_game_over:
-                print(f"\n--- Player {player.color.value} wins! ---")
+            if action == "roll":
+                roll = self.dice.roll()
+                print(f"Rolled a {roll}")
+
+                old_player_index = self.state.current_player_index
+                self.play_turn(roll)
+
+                if self.state.is_game_over:
+                    print(f"\n--- Player {player.color.value} wins! ---")
+                    break
+
+                new_player_index = self.state.current_player_index
+                if roll == 6:
+                    if old_player_index != new_player_index:
+                        print("Rolled three consecutive 6s. Forfeiting turn.")
+                    else:
+                        print("Got an extra turn for rolling a 6.")
+
+            elif action == "save":
+                if len(command) > 1:
+                    filepath = command[1]
+                    save_game(self.state, filepath)
+                    print(f"Game saved to {filepath}")
+                else:
+                    print("Error: Missing filepath. Usage: save <filepath>")
+
+            elif action == "quit":
+                print("Quitting game.")
                 break
 
-            new_player_index = self.state.current_player_index
-            if roll == 6:
-                if old_player_index != new_player_index:
-                    print("Rolled three consecutive 6s. Forfeiting turn.")
-                else:
-                    print("Got an extra turn for rolling a 6.")
+            else:
+                if player.role == "human":
+                    print(f"Unknown command: {action}")
+
 
     def next_player(self):
         """Advances to the next player."""

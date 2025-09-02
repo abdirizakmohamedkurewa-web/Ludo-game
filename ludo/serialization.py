@@ -20,6 +20,7 @@ class PieceData:
 class PlayerData:
     """Serializable representation of a Player."""
     color: str  # PlayerColor.value
+    role: str
     pieces: List[PieceData]
 
 
