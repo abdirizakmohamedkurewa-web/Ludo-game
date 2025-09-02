@@ -116,9 +116,9 @@ This document provides a detailed, step-by-step development plan for the Python 
 **Goal:** Create a graphical user interface for the game using Pygame.
 
 -   **Task 4.1: Basic Board Rendering**
-    -   [ ] `apps/gui/pygame_app.py`: Create a Pygame window.
-    -   [ ] Draw the Ludo board, including squares, yards, and home columns.
-    -   [ ] Draw pieces at their correct positions based on the `GameState`.
+    -   [x] `apps/gui/pygame_app.py`: Create a Pygame window.
+    -   [x] Draw the Ludo board, including squares, yards, and home columns.
+    -   [x] Draw pieces at their correct positions based on the `GameState`.
 -   **Task 4.2: Game State Visualization**
     -   [ ] Display the current player's turn.
     -   [ ] Show the result of a dice roll.
