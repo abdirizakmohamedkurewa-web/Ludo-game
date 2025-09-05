@@ -124,8 +124,8 @@ This document provides a detailed, step-by-step development plan for the Python 
     -   [x] Show the result of a dice roll.
     -   [x] Highlight legal moves when a piece is selected.
 -   **Task 4.3: User Interaction**
-    -   [ ] Implement mouse clicks to roll the dice.
-    -   [ ] Implement mouse clicks to select a piece to move.
+    -   [x] Implement mouse clicks to roll the dice.
+    -   [x] Implement mouse clicks to select a piece to move.
 -   **Task 4.4: Animations (Simple)**
     -   [ ] Animate the dice roll.
     -   [ ] Animate piece movement from one square to another.
