@@ -21,7 +21,7 @@ from ludo.state import GameState
 from ludo.player import Player
 from ludo.piece import Piece
 from ludo.utils.constants import PlayerColor, PieceState
-from ludo.board import START_SQUARES, SAFE_SQUARES
+from ludo.board import START_SQUARES, SAFE_SQUARES, HOME_COLUMN_LENGTH
 from ludo.game import Game
 from ludo.dice import Dice
 from ludo.bots.human_bot import HumanBot
@@ -245,31 +245,67 @@ def draw_info_panel(screen, game, font, ui_buttons, animation=None):
     screen.blit(roll_text_surf, text_rect)
 
 
+def draw_game_over_screen(screen, winner, font, ui_buttons):
+    """Draws the game over overlay."""
+    overlay_color = (0, 0, 0, 180) # Semi-transparent black
+    s = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+    s.fill(overlay_color)
+    screen.blit(s, (0, 0))
+
+    # --- Winner Text ---
+    winner_color_name = winner.color.name
+    winner_text = f"Player {winner_color_name} Wins!"
+    text_surf = font.render(winner_text, True, PLAYER_COLORS[winner_color_name])
+    text_rect = text_surf.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 60))
+    screen.blit(text_surf, text_rect)
+
+    # --- "Play Again" Button ---
+    play_again_rect = pygame.Rect(SCREEN_WIDTH / 2 - 150, SCREEN_HEIGHT / 2, 140, 50)
+    ui_buttons["play_again"] = play_again_rect
+    pygame.draw.rect(screen, PLAYER_COLORS["GREEN"], play_again_rect)
+    play_again_text = font.render("Play Again", True, BLACK)
+    text_rect = play_again_text.get_rect(center=play_again_rect.center)
+    screen.blit(play_again_text, text_rect)
+
+    # --- "Quit" Button ---
+    quit_rect = pygame.Rect(SCREEN_WIDTH / 2 + 10, SCREEN_HEIGHT / 2, 140, 50)
+    ui_buttons["quit"] = quit_rect
+    pygame.draw.rect(screen, PLAYER_COLORS["RED"], quit_rect)
+    quit_text = font.render("Quit", True, BLACK)
+    text_rect = quit_text.get_rect(center=quit_rect.center)
+    screen.blit(quit_text, text_rect)
+
+
 def main():
     """Main function to run the Ludo game GUI."""
     pygame.init()
     font = pygame.font.SysFont("Arial", 24)
+    big_font = pygame.font.SysFont("Arial", 48, bold=True)
     clock = pygame.time.Clock()
     ui_buttons = {} # To store rects of UI elements for interaction
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Ludo")
 
-    # --- Game Initialization ---
-    dice = Dice()
-    players = [
-        Player(color=PlayerColor.RED, role="human"),
-        Player(color=PlayerColor.GREEN, role="human"),
-        Player(color=PlayerColor.YELLOW, role="human"),
-        Player(color=PlayerColor.BLUE, role="human"),
-    ]
-    strategies = [HumanBot(), HumanBot(), HumanBot(), HumanBot()]
-    game = Game(players=players, strategies=strategies, dice=dice)
+    # --- Game Factory Function ---
+    def create_game():
+        dice = Dice()
+        players = [
+            Player(color=PlayerColor.RED, role="human"),
+            Player(color=PlayerColor.GREEN, role="human"),
+            Player(color=PlayerColor.YELLOW, role="human"),
+            Player(color=PlayerColor.BLUE, role="human"),
+        ]
+        strategies = [HumanBot(), HumanBot(), HumanBot(), HumanBot()]
+        return Game(players=players, strategies=strategies, dice=dice)
+
+    game = create_game()
 
     # Game loop variables
     legal_moves = []
     selected_piece = None
     animation = None # For handling animations
+    winner = None
 
     running = True
     while running:
@@ -280,9 +316,23 @@ def main():
                 running = False
 
             # --- Handle User Input ---
-            # Block input if an animation is running
+            # Block game input if an animation is running or game is over
             if animation:
                 continue
+
+            if winner: # Game is over, only handle game over screen buttons
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if ui_buttons.get("play_again") and ui_buttons["play_again"].collidepoint(event.pos):
+                        print("Starting a new game...")
+                        game = create_game()
+                        winner = None
+                        legal_moves = []
+                        selected_piece = None
+                        animation = None
+                        ui_buttons = {}
+                    elif ui_buttons.get("quit") and ui_buttons["quit"].collidepoint(event.pos):
+                        running = False
+                continue # Skip the rest of the event loop
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # 1. Handle Roll Dice Button Click
@@ -395,8 +445,8 @@ def main():
                     print(f"Moved piece {piece_to_move.id} to destination {animation['destination']}")
 
                     if game.state.is_game_over:
-                        print(f"Player {game.state.players[game.state.current_player_index].color.name} has won!")
-                        # Handle game over properly here
+                        winner = game.state.players[game.state.current_player_index]
+                        print(f"Player {winner.color.name} has won!")
 
                     if roll != 6:
                         game.next_player()
@@ -412,6 +462,9 @@ def main():
         draw_legal_move_highlights(screen, game, selected_piece, legal_moves)
         draw_pieces(screen, game.state, legal_moves, selected_piece, animation)
         draw_info_panel(screen, game, font, ui_buttons, animation)
+
+        if winner:
+            draw_game_over_screen(screen, winner, big_font, ui_buttons)
 
         # Update the display
         pygame.display.flip()
