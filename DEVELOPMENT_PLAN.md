@@ -127,8 +127,8 @@ This document provides a detailed, step-by-step development plan for the Python 
     -   [x] Implement mouse clicks to roll the dice.
     -   [x] Implement mouse clicks to select a piece to move.
 -   **Task 4.4: Animations (Simple)**
-    -   [ ] Animate the dice roll.
-    -   [ ] Animate piece movement from one square to another.
+    -   [x] Animate the dice roll.
+    -   [x] Animate piece movement from one square to another.
 -   **Task 4.5: Game Over Screen**
     -   [ ] Display a message when a player wins the game.
 
