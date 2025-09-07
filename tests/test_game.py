@@ -111,3 +111,41 @@ def test_three_sixes_no_forfeit_if_disabled(game_two_players):
     # The player should get an extra turn, not forfeit
     assert game.state.current_player_index == 0
     assert game.state.consecutive_sixes == 3
+
+
+def test_no_legal_moves_advances_turn(game_two_players):
+    """
+    Tests that the turn advances if a player rolls a non-6 and has no legal moves.
+    """
+    game = game_two_players
+    # Block the start square so the player can't move from the yard
+    p2_piece = game.state.players[1].pieces[0]
+    p2_piece.state = PieceState.TRACK
+    p2_piece.position = 0  # RED's start square
+    # Make a block
+    p2_piece_2 = game.state.players[1].pieces[1]
+    p2_piece_2.state = PieceState.TRACK
+    p2_piece_2.position = 0
+
+    assert game.state.current_player_index == 0
+    game.play_turn(5)  # Roll a 5, no legal moves from yard
+    assert game.state.current_player_index == 1
+
+
+def test_no_legal_moves_on_6_keeps_turn(game_two_players):
+    """
+    Tests that the player keeps the turn if they roll a 6 but have no legal moves.
+    """
+    game = game_two_players
+    # Block the start square so the player can't move from the yard
+    p2_piece = game.state.players[1].pieces[0]
+    p2_piece.state = PieceState.TRACK
+    p2_piece.position = 0  # RED's start square
+    # Make a block
+    p2_piece_2 = game.state.players[1].pieces[1]
+    p2_piece_2.state = PieceState.TRACK
+    p2_piece_2.position = 0
+
+    assert game.state.current_player_index == 0
+    game.play_turn(6)
+    assert game.state.current_player_index == 0

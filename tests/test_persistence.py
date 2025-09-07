@@ -4,6 +4,7 @@ Tests for game state persistence.
 
 import json
 from pathlib import Path
+import pytest
 
 from ludo.bots.human_bot import HumanBot
 from ludo.dice import Dice
@@ -94,3 +95,26 @@ def test_save_and_load_game(tmp_path: Path):
     # 4. Assert that the loaded state is identical to the original
     # The GameState is a dataclass, so __eq__ should perform a deep comparison
     assert loaded_state == original_state
+
+
+def test_load_game_with_schema_version_mismatch(tmp_path: Path):
+    """
+    Tests that loading a game with a mismatched schema version raises a ValueError.
+    """
+    # 1. Create a dummy save file with an invalid schema version
+    save_file = tmp_path / "invalid_version.json"
+    dummy_data = {
+        "schema_version": "0.1-alpha",
+        "players": [],
+        "current_player_index": 0,
+        "dice_roll": None,
+        "is_game_over": False,
+        "consecutive_sixes": 0,
+        "dice_seed": 123,
+    }
+    with open(save_file, "w") as f:
+        json.dump(dummy_data, f)
+
+    # 2. Assert that loading this file raises a ValueError
+    with pytest.raises(ValueError, match="Schema version mismatch"):
+        load_game(save_file)

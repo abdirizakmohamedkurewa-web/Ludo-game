@@ -116,55 +116,61 @@ class Game:
         if roll != 6:
             self.next_player()
 
+    def _get_player_command(self, player: Player) -> list[str]:
+        """Gets a command from the current player (human or bot)."""
+        if player.role == "human":
+            command_str = input("Enter command (roll, save <file>, quit): ")
+            return command_str.strip().split()
+        else:
+            print(f"Bot ({player.role}) is thinking...")
+            return ["roll"]
+
+    def _handle_roll(self, player: Player):
+        """Handles the 'roll' command."""
+        roll = self.dice.roll()
+        print(f"Rolled a {roll}")
+
+        old_player_index = self.state.current_player_index
+        self.play_turn(roll)
+
+        if self.state.is_game_over:
+            print(f"--- Player {player.color.name} wins! ---")
+            return
+
+        new_player_index = self.state.current_player_index
+        if roll == 6:
+            if old_player_index != new_player_index:
+                print("Rolled three consecutive 6s. Forfeiting turn.")
+            else:
+                print("Got an extra turn for rolling a 6.")
+
+    def _handle_save(self, command: list[str]):
+        """Handles the 'save' command."""
+        if len(command) > 1:
+            filepath = command[1]
+            save_game(self.state, filepath)
+            print(f"Game saved to {filepath}")
+        else:
+            print("Error: Missing filepath. Usage: save <filepath>")
+
     def loop_cli(self):
         """Runs the game loop for the Command-Line Interface."""
         while not self.state.is_game_over:
             player = self.state.players[self.state.current_player_index]
             print(f"\n--- {player.color.value}'s Turn ({player.role}) ---")
 
-            if player.role == "human":
-                command_str = input("Enter command (roll, save <file>, quit): ")
-                command = command_str.strip().split()
-            else:
-                # Bots always roll
-                print(f"Bot ({player.role}) is thinking...")
-                command = ["roll"]
-
+            command = self._get_player_command(player)
             action = command[0].lower() if command else ""
 
             if action == "roll":
-                roll = self.dice.roll()
-                print(f"Rolled a {roll}")
-
-                old_player_index = self.state.current_player_index
-                self.play_turn(roll)
-
-                if self.state.is_game_over:
-                    print(f"\n--- Player {player.color.value} wins! ---")
-                    break
-
-                new_player_index = self.state.current_player_index
-                if roll == 6:
-                    if old_player_index != new_player_index:
-                        print("Rolled three consecutive 6s. Forfeiting turn.")
-                    else:
-                        print("Got an extra turn for rolling a 6.")
-
+                self._handle_roll(player)
             elif action == "save":
-                if len(command) > 1:
-                    filepath = command[1]
-                    save_game(self.state, filepath)
-                    print(f"Game saved to {filepath}")
-                else:
-                    print("Error: Missing filepath. Usage: save <filepath>")
-
+                self._handle_save(command)
             elif action == "quit":
                 print("Quitting game.")
                 break
-
-            else:
-                if player.role == "human":
-                    print(f"Unknown command: {action}")
+            elif player.role == "human":
+                print(f"Unknown command: {action}")
 
     def next_player(self):
         """Advances to the next player."""

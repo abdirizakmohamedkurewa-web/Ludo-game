@@ -143,9 +143,9 @@ This document provides a detailed, step-by-step development plan for the Python 
     -   [x] Add API documentation using docstrings.
     -   [x] Create a `CONTRIBUTING.md` file with guidelines for developers.
 -   **Task 5.2: Code Cleanup**
-    -   [ ] Perform a final pass of linting and formatting.
-    -   [ ] Refactor any complex or unclear parts of the code.
-    -   [ ] Ensure test coverage is high (e.g., >90%).
+    -   [x] Perform a final pass of linting and formatting.
+    -   [x] Refactor any complex or unclear parts of the code.
+    -   [x] Ensure test coverage is high (e.g., >90%).
 -   **Task 5.3: Packaging for Distribution (Optional)**
     -   [ ] Configure `pyproject.toml` for PyPI.
     -   [ ] Create a source distribution (`sdist`) and wheel.
