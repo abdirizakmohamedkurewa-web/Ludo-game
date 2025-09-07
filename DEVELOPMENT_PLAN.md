@@ -130,7 +130,7 @@ This document provides a detailed, step-by-step development plan for the Python 
     -   [x] Animate the dice roll.
     -   [x] Animate piece movement from one square to another.
 -   **Task 4.5: Game Over Screen**
-    -   [ ] Display a message when a player wins the game.
+    -   [x] Display a message when a player wins the game.
 
 ---
 
