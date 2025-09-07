@@ -16,7 +16,25 @@ class GreedyBot(Strategy):
     """A bot that uses a greedy algorithm to choose the best move."""
 
     def _get_move_score(self, move: Move, game_state: GameState) -> tuple[int, int]:
-        """Assigns a score to a move based on a set of greedy priorities."""
+        """
+        Assigns a score to a potential move based on a set of greedy priorities.
+
+        The scoring is hierarchical:
+        1.  **Winning move (score 4):** Moving a piece to the HOME position.
+        2.  **Capture move (score 3):** Landing on an opponent's piece.
+        3.  **Entering from yard (score 2):** Moving a piece from the YARD.
+        4.  **Progressing on track (score 1):** Moving a piece along the track.
+        5.  **Default (score 0):** Any other move.
+
+        A secondary score (the destination square) is used as a tie-breaker.
+
+        Args:
+            move: The move to be scored.
+            game_state: The current state of the game.
+
+        Returns:
+            A tuple containing the primary and secondary score.
+        """
         piece_to_move, destination = move
         original_piece = [p for p in game_state.players[game_state.current_player_index].pieces if p.id == piece_to_move.id][0]
 

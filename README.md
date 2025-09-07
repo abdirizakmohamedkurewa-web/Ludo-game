@@ -74,7 +74,7 @@
 - **Language**: Python ≥ 3.10
 - **Core**: Pure Python (no GUI deps)
 - **CLI**: `argparse` / `rich` (optional for nice output)
-- **GUI (optional)**: `pygame`
+- **GUI**: `pygame`
 - **Testing**: `pytest`, `pytest-cov`
 - **Quality**: `ruff` (lint), `black` (format), `mypy` (types), `pre-commit`
 - **CI**: GitHub Actions
@@ -83,9 +83,9 @@
 
 ## Repository Structure
 
-ludo-game/ ├─ ludo/                     # Core game engine (pure Python) │  ├─ init.py │  ├─ game.py                # Game orchestration (turns, state machine) │  ├─ board.py               # Board geometry, squares, paths │  ├─ rules.py               # Move validation, capture rules, safe squares │  ├─ player.py              # Player entity, color, pieces │  ├─ piece.py               # Piece entity & transitions │  ├─ dice.py                # Dice abstraction (seedable for tests) │  ├─ state.py               # dataclasses for GameState, TurnState, etc. │  ├─ persistence.py         # Save/load (JSON) │  ├─ bots/                  # Simple AI strategies │  │  ├─ base.py │  │  ├─ random_bot.py │  │  └─ greedy_bot.py │  └─ utils/ │     └─ constants.py        # safe squares, paths, colors, etc. │ ├─ apps/ │  ├─ cli/ │  │  ├─ init.py │  │  └─ main.py             # CLI entrypoint, human vs human/bot │  └─ gui/ │     ├─ init.py │     └─ pygame_app.py       # Optional Pygame GUI (later milestone) │ ├─ tests/ │  ├─ test_rules.py │  ├─ test_board.py │  ├─ test_game.py │  ├─ test_bots.py │  └─ fixtures/ │     └─ sample_states.json │ ├─ requirements.txt ├─ requirements-dev.txt ├─ README.md ├─ pyproject.toml            # tool configs (ruff/black/mypy/pytest) ├─ .gitignore └─ LICENSE
+ludo-game/ ├─ ludo/                     # Core game engine (pure Python) │  ├─ init.py │  ├─ game.py                # Game orchestration (turns, state machine) │  ├─ board.py               # Board geometry, squares, paths │  ├─ rules.py               # Move validation, capture rules, safe squares │  ├─ player.py              # Player entity, color, pieces │  ├─ piece.py               # Piece entity & transitions │  ├─ dice.py                # Dice abstraction (seedable for tests) │  ├─ state.py               # dataclasses for GameState, TurnState, etc. │  ├─ persistence.py         # Save/load (JSON) │  ├─ bots/                  # Simple AI strategies │  │  ├─ base.py │  │  ├─ random_bot.py │  │  └─ greedy_bot.py │  └─ utils/ │     └─ constants.py        # safe squares, paths, colors, etc. │ ├─ apps/ │  ├─ cli/ │  │  ├─ init.py │  │  └─ main.py             # CLI entrypoint, human vs human/bot │  └─ gui/ │     ├─ init.py │     └─ pygame_app.py       # Pygame GUI │ ├─ tests/ │  ├─ test_rules.py │  ├─ test_board.py │  ├─ test_game.py │  ├─ test_bots.py │  └─ fixtures/ │     └─ sample_states.json │ ├─ requirements.txt ├─ requirements-dev.txt ├─ README.md ├─ pyproject.toml            # tool configs (ruff/black/mypy/pytest) ├─ .gitignore └─ LICENSE
 
-> **Note**: Start minimal (core + CLI). Add GUI and bots as milestones.
+> **Note**: The project is structured to keep the core game logic (`ludo/`) separate from the user interfaces (`apps/`).
 
 ---
 
@@ -123,19 +123,36 @@ pip install -r requirements-dev.txt
 # Optional: set up pre-commit hooks
 pre-commit install
 
-Run the App
+### Run the App
 
-CLI (human vs random bot example)
+You can run the game using either the Command-Line Interface (CLI) or the Graphical User Interface (GUI).
 
+#### CLI
+
+The CLI is ideal for quick games, testing bots, or running in a terminal-only environment.
+
+**Run a game (e.g., human vs. random bot):**
+```bash
 python -m apps.cli.main --players human random --seed 42
+```
 
-CLI Help
-
+**See all CLI options:**
+```bash
 python -m apps.cli.main --help
+```
 
-Future GUI (after milestone)
+#### GUI
 
+The GUI provides a visual representation of the board and is played using the mouse.
+
+**Run the GUI:**
+```bash
 python -m apps.gui.pygame_app
+```
+The GUI also accepts the `--seed` argument for reproducible games:
+```bash
+python -m apps.gui.pygame_app --seed 42
+```
 
 Run Tests
 
@@ -404,53 +421,53 @@ jobs:
 
 Roadmap
 
-[ ] M0 — Skeleton
+[x] M0 — Skeleton
 
-[ ] Package layout, Game/Board/Rules stubs
+[x] Package layout, Game/Board/Rules stubs
 
-[ ] Basic CLI loop (human vs random bot)
+[x] Basic CLI loop (human vs random bot)
 
-[ ] Seedable dice
+[x] Seedable dice
 
-[ ] Unit test harness
-
-
-[ ] M1 — Complete Rules
-
-[ ] Entering from Yard on 6
-
-[ ] Captures & safe squares
-
-[ ] Home column with exact rolls
-
-[ ] Consecutive 6s handling (configurable)
-
-[ ] Blocking (toggle)
+[x] Unit test harness
 
 
-[ ] M2 — Bots
+[x] M1 — Complete Rules
 
-[ ] RandomBot
+[x] Entering from Yard on 6
 
-[ ] GreedyBot
+[x] Captures & safe squares
 
-[ ] Basic evaluation metrics
+[x] Home column with exact rolls
 
+[x] Consecutive 6s handling (configurable)
 
-[ ] M3 — Persistence
-
-[ ] Save/Load JSON
-
-[ ] Deterministic replay (optional)
+[x] Blocking (toggle)
 
 
-[ ] M4 — GUI (Optional)
+[x] M2 — Bots
 
-[ ] Pygame board rendering
+[x] RandomBot
 
-[ ] Mouse interactions, animations
+[x] GreedyBot
 
-[ ] Accessibility/high-contrast
+[x] Basic evaluation metrics
+
+
+[x] M3 — Persistence
+
+[x] Save/Load JSON
+
+[x] Deterministic replay (optional)
+
+
+[x] M4 — GUI
+
+[x] Pygame board rendering
+
+[x] Mouse interactions, animations
+
+[x] Accessibility/high-contrast
 
 
 [ ] M5 — Polish
@@ -468,35 +485,7 @@ Roadmap
 
 Contributing
 
-1. Fork the repo, create a feature branch:
-
-git checkout -b feat/<short-description>
-
-
-2. Keep commits clear; use Conventional Commits:
-
-feat:, fix:, refactor:, docs:, test:, chore:
-
-
-
-3. Ensure green CI: lint, type-check, tests.
-
-
-4. Open a Pull Request with a concise description, screenshots (for GUI), and test notes.
-
-
-
-Code Review Checklist
-
-Business logic lives in ludo/, not in UI.
-
-No side effects in pure rule functions.
-
-Tests for new rules & edge cases.
-
-Types & docstrings for public APIs.
-
-
+Please read our [Contributing Guidelines](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ---
 
