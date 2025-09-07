@@ -150,6 +150,41 @@ def test_greedy_bot_chooses_furthest_piece():
     assert chosen_move[0] is p1.pieces[1]
 
 
+def test_greedy_bot_no_legal_moves():
+    """Test that GreedyBot raises an error if there are no legal moves."""
+    bot = GreedyBot()
+    game_state = GameState(players=[Player(PlayerColor.RED, role="greedy")])
+    with pytest.raises(ValueError, match="No legal moves available"):
+        bot.choose_move([], game_state)
+
+
+def test_greedy_bot_no_dice_roll_in_state():
+    """Test that the scoring function raises an error if dice_roll is not set."""
+    p1 = Player(PlayerColor.RED, role="greedy")
+    p1.pieces[0].state = PieceState.TRACK
+    p1.pieces[0].position = 10
+    game_state = GameState(players=[p1], dice_roll=None)  # No dice roll
+    legal_moves: list[Move] = [(p1.pieces[0], 12)]
+    bot = GreedyBot()
+    with pytest.raises(ValueError, match="without a dice roll"):
+        bot.choose_move(legal_moves, game_state)
+
+
+def test_greedy_bot_chooses_progress_on_track():
+    """Test that the bot chooses to move a piece on the track over a default move."""
+    p1 = Player(PlayerColor.RED, role="greedy")
+    p1.pieces[0].state = PieceState.TRACK
+    p1.pieces[0].position = 10  # This move will be scored as 1
+    # A piece in the home column that can't move to HOME is a default move (score 0)
+    p1.pieces[1].state = PieceState.HOME_COLUMN
+    p1.pieces[1].position = 53
+    game_state = GameState(players=[p1], dice_roll=2)
+    legal_moves: list[Move] = [(p1.pieces[0], 12), (p1.pieces[1], 55)]
+    bot = GreedyBot()
+    chosen_move = bot.choose_move(legal_moves, game_state)
+    assert chosen_move[0] is p1.pieces[0]
+
+
 def test_greedy_bot_capture_tie_break():
     """
     Test that the bot chooses the capture that moves its piece further.
