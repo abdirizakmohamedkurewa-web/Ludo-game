@@ -1,3 +1,43 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ludo-game"
+version = "1.0.0"
+authors = [
+  {name = "Ludo Dev Team", email = "dev@ludo.example"}
+]
+description = "A clean, testable, and extendable implementation of the classic Ludo board game in Python."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Games/Entertainment :: Board Games",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "pygame==2.5.2",
+    "pygame-menu==4.4.3",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/user/ludo-game"
+"Bug Tracker" = "https://github.com/user/ludo-game/issues"
+
+[project.scripts]
+ludo-cli = "apps.cli.main:main"
+ludo-gui = "apps.gui.pygame_app:main"
+
+[tool.setuptools.packages.find]
+include = ["apps*", "ludo*"]
+
 [tool.black]
 line-length = 100
 target-version = ["py310"]
