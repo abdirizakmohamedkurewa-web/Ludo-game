@@ -1,16 +1,20 @@
 """
 Dataclasses for GameState, TurnState, etc.
 """
+
 from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import List, Optional
+
 from ludo.player import Player
-from ludo.serialization import GameData, SCHEMA_VERSION
+from ludo.serialization import SCHEMA_VERSION, GameData
 
 
 @dataclass
 class GameState:
     """Represents the complete state of the game at a point in time."""
+
     players: List[Player]
     current_player_index: int = 0
     dice_roll: Optional[int] = None
@@ -51,10 +55,12 @@ class GameState:
 @dataclass
 class PlayerState:
     """Represents the state of a single player."""
+
     pass
 
 
 @dataclass
 class PieceState:
     """Represents the state of a single piece."""
+
     pass

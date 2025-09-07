@@ -1,6 +1,7 @@
 """
 Game constants (safe squares, paths, colors, etc.).
 """
+
 from enum import Enum, auto
 
 

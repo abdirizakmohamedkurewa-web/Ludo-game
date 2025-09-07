@@ -1,8 +1,10 @@
 """
 Simple bot that chooses a random legal move.
 """
+
 import random
 from typing import List
+
 from ludo.bots.base import Strategy
 from ludo.move import Move
 from ludo.state import GameState

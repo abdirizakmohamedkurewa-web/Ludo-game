@@ -1,16 +1,17 @@
 """
 Move validation, capture rules, safe squares.
 """
+
 from typing import List
-from ludo.state import GameState
-from ludo.piece import Piece
-from ludo.move import Move
-from ludo.utils.constants import PieceState, PlayerColor
+
 from ludo.board import (
     HOME_COLUMN_LENGTH,
     START_SQUARES,
     TRACK_LENGTH,
 )
+from ludo.move import Move
+from ludo.state import GameState
+from ludo.utils.constants import PieceState, PlayerColor
 
 
 class Rules:
@@ -59,21 +60,23 @@ class Rules:
                 # Check for blocks if the rule is enabled
                 path_is_clear = True
                 if use_blocking_rule:
-                    for i in range(1, roll): # Check intermediate squares
+                    for i in range(1, roll):  # Check intermediate squares
                         intermediate_square = (piece.position + i) % TRACK_LENGTH
-                        if Rules.is_square_blocked_by_opponent(intermediate_square, player.color, game_state):
+                        if Rules.is_square_blocked_by_opponent(
+                            intermediate_square, player.color, game_state
+                        ):
                             path_is_clear = False
                             break
                 if not path_is_clear:
                     continue
 
                 # A piece's total journey is 51 steps on track + 6 in home column
-                if new_progress < 51: # Stays on main track
+                if new_progress < 51:  # Stays on main track
                     destination = (piece.position + roll) % TRACK_LENGTH
                     legal_moves.append((piece, destination))
-                elif new_progress < 51 + HOME_COLUMN_LENGTH: # Enters home column
+                elif new_progress < 51 + HOME_COLUMN_LENGTH:  # Enters home column
                     home_col_pos = new_progress - 51
-                    destination = 52 + home_col_pos # 52 is the base for home column positions
+                    destination = 52 + home_col_pos  # 52 is the base for home column positions
                     legal_moves.append((piece, destination))
 
             elif piece.state == PieceState.HOME_COLUMN:

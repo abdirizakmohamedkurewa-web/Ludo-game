@@ -1,11 +1,13 @@
 import argparse
-from ludo.game import Game
-from ludo.dice import Dice
-from ludo.player import Player
+
 from ludo.bots.human_bot import HumanBot
 from ludo.bots.random_bot import RandomBot
-from ludo.utils.constants import PlayerColor
+from ludo.dice import Dice
+from ludo.game import Game
 from ludo.persistence import load_game
+from ludo.player import Player
+from ludo.utils.constants import PlayerColor
+
 
 def main():
     """The main entry point for the command-line application."""
@@ -55,7 +57,9 @@ def main():
 
     game.loop_cli()
 
+
 if __name__ == "__main__":
     import sys
+
     main()
     sys.exit(0)

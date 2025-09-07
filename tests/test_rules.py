@@ -1,11 +1,13 @@
 import pytest
-from ludo.game import Game
-from ludo.dice import Dice
-from ludo.rules import Rules
-from ludo.move import move_piece
-from ludo.utils.constants import PieceState, PlayerColor
-from ludo.player import Player
+
 from ludo.bots.human_bot import HumanBot
+from ludo.dice import Dice
+from ludo.game import Game
+from ludo.move import move_piece
+from ludo.player import Player
+from ludo.rules import Rules
+from ludo.utils.constants import PieceState, PlayerColor
+
 
 @pytest.fixture
 def game():
@@ -16,6 +18,7 @@ def game():
     ]
     strategies = [HumanBot(), HumanBot()]
     return Game(players=players, strategies=strategies, dice=Dice())
+
 
 def test_enter_from_yard_on_roll_6(game):
     """
@@ -35,6 +38,7 @@ def test_enter_from_yard_on_roll_6(game):
     # Check that the destination is the start square for that player
     start_square = 0  # Red's start square
     assert any(d == start_square for p, d in legal_moves if p == piece_in_yard)
+
 
 def test_enter_from_yard_on_roll_not_6(game):
     """
@@ -177,7 +181,7 @@ def test_no_capture_on_safe_square(game):
     # The red piece should move, but the green piece should not be captured
     assert red_piece.position == 13
     assert green_piece.state == PieceState.TRACK  # State is unchanged
-    assert green_piece.position == 13         # Position is unchanged
+    assert green_piece.position == 13  # Position is unchanged
 
 
 def test_move_is_blocked_by_distant_blockade(game):
@@ -250,7 +254,7 @@ def test_piece_moves_from_track_to_home_column(game):
 
     # Check destination
     move = next(m for m in legal_moves_enter if m[0] == red_piece)
-    assert move[1] == 54 # 52 (base) + (50+3-51) = 54
+    assert move[1] == 54  # 52 (base) + (50+3-51) = 54
 
     # --- Case 2: Land exactly in the HOME state from the track ---
     roll_win = 6
@@ -258,7 +262,7 @@ def test_piece_moves_from_track_to_home_column(game):
     assert any(p == red_piece for p, d in legal_moves_win)
 
     move = next(m for m in legal_moves_win if m[0] == red_piece)
-    assert move[1] == 57 # 52 (base) + (50+6-51) = 57
+    assert move[1] == 57  # 52 (base) + (50+6-51) = 57
 
 
 def test_home_column_exact_roll(game):
@@ -270,7 +274,7 @@ def test_home_column_exact_roll(game):
 
     # Position the piece 2 steps away from HOME (pos 55)
     red_piece.state = PieceState.HOME_COLUMN
-    red_piece.position = 55 # Needs a roll of 2 to win
+    red_piece.position = 55  # Needs a roll of 2 to win
 
     # Attempt to move with a roll of 1
     roll = 1
@@ -278,7 +282,7 @@ def test_home_column_exact_roll(game):
     assert any(p == red_piece for p, d in legal_moves)
 
     move = next(m for m in legal_moves if m[0] == red_piece)
-    assert move[1] == 56 # 55 + 1 = 56
+    assert move[1] == 56  # 55 + 1 = 56
 
     # Attempt to move with a roll that is too high
     too_high_roll = 3

@@ -1,15 +1,19 @@
 """
 Piece entity & transitions.
 """
+
 from __future__ import annotations
+
 from dataclasses import dataclass
-from ludo.utils.constants import PlayerColor, PieceState
+
 from ludo.serialization import PieceData
+from ludo.utils.constants import PieceState, PlayerColor
 
 
 @dataclass
 class Piece:
     """Represents a single game piece."""
+
     id: int
     color: PlayerColor
     state: PieceState = PieceState.YARD
@@ -19,7 +23,7 @@ class Piece:
         """Converts the Piece to a serializable PieceData object."""
         return PieceData(
             id=self.id,
-            color=self.color.value,
+            color=self.color.name,
             state=self.state.name,
             position=self.position,
         )
@@ -29,7 +33,7 @@ class Piece:
         """Creates a Piece from a serializable PieceData object."""
         return cls(
             id=data.id,
-            color=PlayerColor(data.color),
+            color=PlayerColor[data.color],
             state=PieceState[data.state],
             position=data.position,
         )

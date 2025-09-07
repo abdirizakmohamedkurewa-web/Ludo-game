@@ -1,7 +1,9 @@
 """
 Bot that asks a human for input.
 """
+
 from typing import List
+
 from ludo.bots.base import Strategy
 from ludo.move import Move
 from ludo.state import GameState

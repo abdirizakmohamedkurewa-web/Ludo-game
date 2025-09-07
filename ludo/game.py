@@ -1,16 +1,16 @@
 """
 Game orchestration (turns, state machine).
 """
-from typing import Sequence, Optional
-from ludo.dice import Dice
-from ludo.state import GameState
-from ludo.player import Player
-from ludo.piece import Piece
-from ludo.rules import Rules
-from ludo.utils.constants import PlayerColor, PieceState
-from ludo.move import move_piece
+
+from typing import Optional, Sequence
+
 from ludo.bots.base import Strategy
+from ludo.dice import Dice
+from ludo.move import move_piece
 from ludo.persistence import save_game
+from ludo.player import Player
+from ludo.rules import Rules
+from ludo.state import GameState
 
 
 class Game:
@@ -28,6 +28,7 @@ class Game:
             the same square form a block.
         state (GameState): The current state of the game.
     """
+
     def __init__(
         self,
         players: Sequence[Player],
@@ -35,7 +36,7 @@ class Game:
         dice: Dice,
         state: Optional[GameState] = None,
         three_six_forfeit: bool = True,
-        use_blocking_rule: bool = True
+        use_blocking_rule: bool = True,
     ):
         """
         Initializes a new Ludo game.
@@ -59,7 +60,7 @@ class Game:
         if state:
             self.state = state
         else:
-            self.state = GameState(players=players, dice_seed=self.dice.seed)
+            self.state = GameState(players=list(players), dice_seed=self.dice.seed)
 
     def play_turn(self, roll: int):
         """
@@ -91,9 +92,7 @@ class Game:
             return  # Turn is forfeited
 
         # 3. Get legal moves
-        legal_moves = Rules.get_legal_moves(
-            self.state, roll, self.use_blocking_rule
-        )
+        legal_moves = Rules.get_legal_moves(self.state, roll, self.use_blocking_rule)
 
         # 4. Handle case with no legal moves
         if not legal_moves:
@@ -167,8 +166,9 @@ class Game:
                 if player.role == "human":
                     print(f"Unknown command: {action}")
 
-
     def next_player(self):
         """Advances to the next player."""
-        self.state.current_player_index = (self.state.current_player_index + 1) % len(self.state.players)
+        self.state.current_player_index = (self.state.current_player_index + 1) % len(
+            self.state.players
+        )
         self.state.consecutive_sixes = 0

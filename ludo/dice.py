@@ -1,12 +1,14 @@
 """
 Dice abstraction (seedable for tests).
 """
+
 import random
 from typing import Optional
 
 
 class Dice:
     """A standard 6-sided die."""
+
     def __init__(self, seed: Optional[int] = None):
         self.seed = seed
         if self.seed is not None:
