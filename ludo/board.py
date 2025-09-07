@@ -1,6 +1,7 @@
 """
 Board layout, piece movement calculations.
 """
+
 from ludo.utils.constants import PlayerColor
 
 # The main track has 52 squares (0-51)

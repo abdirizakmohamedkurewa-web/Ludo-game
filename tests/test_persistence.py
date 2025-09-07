@@ -1,16 +1,16 @@
 """
 Tests for game state persistence.
 """
+
 import json
 from pathlib import Path
-from ludo.game import Game
-from ludo.dice import Dice
-from ludo.persistence import save_game, load_game
-from ludo.utils.constants import PlayerColor, PieceState
 
-
-from ludo.player import Player
 from ludo.bots.human_bot import HumanBot
+from ludo.dice import Dice
+from ludo.game import Game
+from ludo.persistence import load_game, save_game
+from ludo.player import Player
+from ludo.utils.constants import PieceState, PlayerColor
 
 
 def test_save_game(tmp_path: Path):
@@ -49,15 +49,15 @@ def test_save_game(tmp_path: Path):
     # Check player data
     players = saved_data["players"]
     assert len(players) == 2
-    assert players[0]["color"] == PlayerColor.RED.value
-    assert players[1]["color"] == PlayerColor.GREEN.value
+    assert players[0]["color"] == PlayerColor.RED.name
+    assert players[1]["color"] == PlayerColor.GREEN.name
 
     # Check piece data for the first player
     pieces = players[0]["pieces"]
     assert len(pieces) == 4
     for i, piece in enumerate(pieces):
         assert piece["id"] == i
-        assert piece["color"] == PlayerColor.RED.value
+        assert piece["color"] == PlayerColor.RED.name
         assert piece["state"] == "YARD"
         assert piece["position"] == -1
 

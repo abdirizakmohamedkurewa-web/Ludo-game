@@ -1,12 +1,13 @@
 import pytest
-from ludo.game import Game
-from ludo.dice import Dice
-from ludo.rules import Rules
-from ludo.move import move_piece
-from ludo.utils.constants import PieceState, PlayerColor
+
 from ludo.board import HOME_COLUMN_LENGTH
-from ludo.player import Player
 from ludo.bots.human_bot import HumanBot
+from ludo.dice import Dice
+from ludo.game import Game
+from ludo.move import move_piece
+from ludo.player import Player
+from ludo.rules import Rules
+from ludo.utils.constants import PieceState, PlayerColor
 
 
 @pytest.fixture
@@ -19,6 +20,7 @@ def game():
     strategies = [HumanBot(), HumanBot()]
     return Game(players=players, strategies=strategies, dice=Dice())
 
+
 def test_piece_requires_exact_roll_to_enter_home(game):
     """
     Tests that a piece in the home column requires an exact roll to move to HOME.
@@ -28,7 +30,7 @@ def test_piece_requires_exact_roll_to_enter_home(game):
 
     # Position the piece 2 steps away from HOME
     piece.state = PieceState.HOME_COLUMN
-    piece.position = 52 + (HOME_COLUMN_LENGTH - 1 - 2) # 2 steps away from the end
+    piece.position = 52 + (HOME_COLUMN_LENGTH - 1 - 2)  # 2 steps away from the end
 
     # A roll of 2 should be legal
     legal_moves_2 = Rules.get_legal_moves(game.state, 2)
@@ -37,6 +39,7 @@ def test_piece_requires_exact_roll_to_enter_home(game):
     # A roll of 3 should be illegal (overshoots)
     legal_moves_3 = Rules.get_legal_moves(game.state, 3)
     assert not any(p == piece for p, d in legal_moves_3)
+
 
 def test_move_overshooting_home_is_illegal(game):
     """
@@ -47,7 +50,7 @@ def test_move_overshooting_home_is_illegal(game):
 
     # Position the piece on the track, 2 steps from its home entry
     piece.state = PieceState.TRACK
-    piece.position = 51 - 2 # 2 steps before home entry square for RED (pos 49)
+    piece.position = 51 - 2  # 2 steps before home entry square for RED (pos 49)
 
     # A roll of 5 should be legal (lands inside home column)
     # new_progress = 49 + 5 = 54. home_col_pos = 54-51 = 3. Legal.
@@ -58,6 +61,7 @@ def test_move_overshooting_home_is_illegal(game):
     # new_progress = 49 + 9 = 58. home_col_pos = 58-51 = 7. Illegal.
     legal_moves_9 = Rules.get_legal_moves(game.state, 9)
     assert not any(p == piece for p, d in legal_moves_9)
+
 
 def test_player_wins_when_all_pieces_are_home(game):
     """
@@ -82,6 +86,7 @@ def test_player_wins_when_all_pieces_are_home(game):
 
     # Post-condition: game is over
     assert game.state.is_game_over
+
 
 def test_game_not_over_if_not_all_pieces_home(game):
     """

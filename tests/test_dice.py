@@ -1,6 +1,7 @@
 """
 Tests for the Dice class.
 """
+
 from ludo.dice import Dice
 
 

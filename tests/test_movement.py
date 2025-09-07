@@ -1,13 +1,9 @@
-import pytest
-from ludo.game import Game
+from ludo.bots.human_bot import HumanBot
 from ludo.dice import Dice
+from ludo.game import Game
 from ludo.move import move_piece
 from ludo.player import Player
-from ludo.piece import Piece
-from ludo.utils.constants import PlayerColor, PieceState
-
-
-from ludo.bots.human_bot import HumanBot
+from ludo.utils.constants import PieceState, PlayerColor
 
 
 def test_move_piece_on_track():

@@ -1,11 +1,12 @@
 import pytest
-from ludo.game import Game
-from ludo.dice import Dice
-from ludo.move import move_piece
-from ludo.utils.constants import PieceState, PlayerColor
+
 from ludo.board import START_SQUARES
-from ludo.player import Player
 from ludo.bots.human_bot import HumanBot
+from ludo.dice import Dice
+from ludo.game import Game
+from ludo.move import move_piece
+from ludo.player import Player
+from ludo.utils.constants import PieceState, PlayerColor
 
 
 @pytest.fixture
@@ -20,6 +21,7 @@ def game():
     # Let's work with the RED player for consistency
     g.state.current_player_index = 0
     return g
+
 
 def test_move_piece_from_yard(game):
     """

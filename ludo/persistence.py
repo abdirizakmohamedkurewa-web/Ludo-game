@@ -1,10 +1,11 @@
 """
 Save/load (JSON).
 """
+
 import json
 from dataclasses import asdict
-from typing import Union
 from pathlib import Path
+from typing import Union
 
 from ludo.serialization import GameData, PieceData, PlayerData
 from ludo.state import GameState

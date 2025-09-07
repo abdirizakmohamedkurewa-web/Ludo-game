@@ -1,14 +1,13 @@
 """
 Bot that chooses moves based on a simple greedy scoring function.
 """
-from typing import List
 
 import copy
 from typing import List
 
 from ludo.bots.base import Strategy
 from ludo.move import Move, move_piece
-from ludo.piece import Piece, PieceState
+from ludo.piece import PieceState
 from ludo.state import GameState
 
 
@@ -36,13 +35,23 @@ class GreedyBot(Strategy):
             A tuple containing the primary and secondary score.
         """
         piece_to_move, destination = move
-        original_piece = [p for p in game_state.players[game_state.current_player_index].pieces if p.id == piece_to_move.id][0]
+        original_piece = [
+            p
+            for p in game_state.players[game_state.current_player_index].pieces
+            if p.id == piece_to_move.id
+        ][0]
 
         # Create a deep copy of the game state to simulate the move
         sim_state = copy.deepcopy(game_state)
-        piece_in_sim = [p for p in sim_state.players[sim_state.current_player_index].pieces if p.id == piece_to_move.id][0]
+        piece_in_sim = [
+            p
+            for p in sim_state.players[sim_state.current_player_index].pieces
+            if p.id == piece_to_move.id
+        ][0]
 
         # Simulate the move
+        if sim_state.dice_roll is None:
+            raise ValueError("Cannot simulate a move without a dice roll in the game state.")
         move_piece(sim_state, piece_in_sim, sim_state.dice_roll)
 
         # 1. Prioritize moving a piece into the HOME position
@@ -56,7 +65,10 @@ class GreedyBot(Strategy):
                 continue
             for j, original_opponent_piece in enumerate(player.pieces):
                 sim_opponent_piece = sim_state.players[i].pieces[j]
-                if original_opponent_piece.state == PieceState.TRACK and sim_opponent_piece.state == PieceState.YARD:
+                if (
+                    original_opponent_piece.state == PieceState.TRACK
+                    and sim_opponent_piece.state == PieceState.YARD
+                ):
                     return 3, destination
 
         # 3. Prioritize moving a piece out of the YARD
@@ -86,9 +98,7 @@ class GreedyBot(Strategy):
             raise ValueError("No legal moves available to choose from.")
 
         # Score each legal move
-        scored_moves = [
-            (move, self._get_move_score(move, game_state)) for move in legal_moves
-        ]
+        scored_moves = [(move, self._get_move_score(move, game_state)) for move in legal_moves]
 
         # Sort moves: higher score is better. For ties, higher destination is better.
         scored_moves.sort(key=lambda item: (item[1][0], item[1][1]), reverse=True)

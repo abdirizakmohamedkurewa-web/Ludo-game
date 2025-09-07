@@ -1,7 +1,8 @@
 """
 Tests for the state dataclasses.
 """
-from ludo.state import PlayerState, PieceState
+
+from ludo.state import PieceState, PlayerState
 
 
 def test_can_instantiate_state_stubs():

@@ -1,7 +1,9 @@
 """
 Base classes for bot strategies.
 """
+
 from typing import List, Protocol, runtime_checkable
+
 from ludo.move import Move
 from ludo.state import GameState
 

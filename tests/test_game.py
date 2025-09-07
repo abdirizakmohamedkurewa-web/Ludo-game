@@ -1,9 +1,11 @@
 import pytest
-from ludo.game import Game
-from ludo.dice import Dice
-from ludo.utils.constants import PlayerColor, PieceState
-from ludo.player import Player
+
 from ludo.bots.human_bot import HumanBot
+from ludo.bots.random_bot import RandomBot
+from ludo.dice import Dice
+from ludo.game import Game
+from ludo.player import Player
+from ludo.utils.constants import PieceState, PlayerColor
 
 
 def test_game_initialization():
@@ -35,9 +37,6 @@ def test_game_initialization():
         for piece in player.pieces:
             assert piece.state == PieceState.YARD
             assert piece.position == -1
-
-
-from ludo.bots.random_bot import RandomBot
 
 
 @pytest.fixture

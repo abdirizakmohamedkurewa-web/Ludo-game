@@ -1,7 +1,8 @@
 """
 Defines the pixel coordinates for the Ludo board layout.
 """
-from apps.gui.constants import SCREEN_WIDTH, SCREEN_HEIGHT, GRID_SIZE
+
+from apps.gui.constants import GRID_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH
 from ludo.utils.constants import PlayerColor
 
 # A 15x15 grid forms the basis of the board
@@ -21,18 +22,58 @@ def grid_to_pixel(row, col):
 # Define the grid coordinates for the main track (52 squares)
 # The path starts at Red's entry point and moves clockwise.
 _track_grid_coords = [
-    (13, 6), (12, 6), (11, 6), (10, 6), (9, 6), (8, 6),  # Red home arm
-    (8, 5), (8, 4), (8, 3), (8, 2), (8, 1), (8, 0),     # Bottom-left turn
-    (7, 0),                                            # Green entry arm corner
-    (6, 0), (6, 1), (6, 2), (6, 3), (6, 4), (6, 5),     # Green home arm
-    (5, 6), (4, 6), (3, 6), (2, 6), (1, 6), (0, 6),     # Top-left turn
-    (0, 7),                                            # Yellow entry arm corner
-    (0, 8), (1, 8), (2, 8), (3, 8), (4, 8), (5, 8),     # Yellow home arm
-    (6, 9), (6, 10), (6, 11), (6, 12), (6, 13), (6, 14),# Top-right turn
-    (7, 14),                                           # Blue entry arm corner
-    (8, 14), (8, 13), (8, 12), (8, 11), (8, 10), (8, 9),# Blue home arm
-    (9, 8), (10, 8), (11, 8), (12, 8), (13, 8), (14, 8),# Bottom-right turn
-    (14, 7)                                            # Red entry arm corner
+    (13, 6),
+    (12, 6),
+    (11, 6),
+    (10, 6),
+    (9, 6),
+    (8, 6),  # Red home arm
+    (8, 5),
+    (8, 4),
+    (8, 3),
+    (8, 2),
+    (8, 1),
+    (8, 0),  # Bottom-left turn
+    (7, 0),  # Green entry arm corner
+    (6, 0),
+    (6, 1),
+    (6, 2),
+    (6, 3),
+    (6, 4),
+    (6, 5),  # Green home arm
+    (5, 6),
+    (4, 6),
+    (3, 6),
+    (2, 6),
+    (1, 6),
+    (0, 6),  # Top-left turn
+    (0, 7),  # Yellow entry arm corner
+    (0, 8),
+    (1, 8),
+    (2, 8),
+    (3, 8),
+    (4, 8),
+    (5, 8),  # Yellow home arm
+    (6, 9),
+    (6, 10),
+    (6, 11),
+    (6, 12),
+    (6, 13),
+    (6, 14),  # Top-right turn
+    (7, 14),  # Blue entry arm corner
+    (8, 14),
+    (8, 13),
+    (8, 12),
+    (8, 11),
+    (8, 10),
+    (8, 9),  # Blue home arm
+    (9, 8),
+    (10, 8),
+    (11, 8),
+    (12, 8),
+    (13, 8),
+    (14, 8),  # Bottom-right turn
+    (14, 7),  # Red entry arm corner
 ]
 
 # Define home column grid coordinates for each color
@@ -63,6 +104,5 @@ HOME_COLUMN_COORDINATES = {
 }
 
 YARD_COORDINATES = {
-    color: [grid_to_pixel(r, c) for r, c in coords]
-    for color, coords in _yard_grid_coords.items()
+    color: [grid_to_pixel(r, c) for r, c in coords] for color, coords in _yard_grid_coords.items()
 }
