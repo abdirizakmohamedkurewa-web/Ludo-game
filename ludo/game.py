@@ -14,8 +14,43 @@ from ludo.persistence import save_game
 
 
 class Game:
-    """Orchestrates a game of Ludo."""
-    def __init__(self, players: Sequence[Player], strategies: Sequence[Strategy], dice: Dice, state: Optional[GameState] = None, three_six_forfeit: bool = True, use_blocking_rule: bool = True):
+    """
+    Orchestrates a game of Ludo, managing the game state, player turns,
+    and the application of game rules.
+
+    Attributes:
+        dice (Dice): The dice instance for the game.
+        strategies (Sequence[Strategy]): A sequence of bot strategies, one for
+            each player.
+        three_six_forfeit (bool): If True, rolling three consecutive sixes
+            forfeits the turn.
+        use_blocking_rule (bool): If True, two pieces of the same color on
+            the same square form a block.
+        state (GameState): The current state of the game.
+    """
+    def __init__(
+        self,
+        players: Sequence[Player],
+        strategies: Sequence[Strategy],
+        dice: Dice,
+        state: Optional[GameState] = None,
+        three_six_forfeit: bool = True,
+        use_blocking_rule: bool = True
+    ):
+        """
+        Initializes a new Ludo game.
+
+        Args:
+            players: A sequence of Player objects participating in the game.
+            strategies: A sequence of bot strategies corresponding to the players.
+            dice: A Dice object to be used for rolling.
+            state: An optional GameState to load from. If None, a new game
+                state is created.
+            three_six_forfeit: A boolean flag to enable or disable the
+                "three consecutive sixes forfeit turn" rule.
+            use_blocking_rule: A boolean flag to enable or disable the
+                blocking rule.
+        """
         self.dice = dice
         self.strategies = strategies
         self.three_six_forfeit = three_six_forfeit
@@ -29,9 +64,18 @@ class Game:
     def play_turn(self, roll: int):
         """
         Processes a single, automated game turn given a dice roll.
-        It updates the game state, including choosing and making a move
-        (defaults to the first legal one), and advancing the player turn
-        if necessary.
+
+        This method performs the following steps:
+        1. Handles consecutive sixes and checks for turn forfeiture.
+        2. Determines all legal moves for the current player based on the roll.
+        3. If legal moves are available, it uses the player's strategy to
+           choose a move.
+        4. Applies the chosen move to the game state.
+        5. Checks for a win condition.
+        6. Advances to the next player if the roll was not a 6.
+
+        Args:
+            roll: The integer result of a dice roll (1-6).
         """
         self.state.dice_roll = roll
 

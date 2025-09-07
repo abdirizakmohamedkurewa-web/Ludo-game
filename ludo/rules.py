@@ -14,12 +14,30 @@ from ludo.board import (
 
 
 class Rules:
-    """Contains all the game logic and rules."""
+    """A collection of static methods to enforce the rules of Ludo."""
+
     @staticmethod
-    def get_legal_moves(game_state: GameState, roll: int, use_blocking_rule: bool = True) -> List[Move]:
+    def get_legal_moves(
+        game_state: GameState, roll: int, use_blocking_rule: bool = True
+    ) -> List[Move]:
         """
-        Determines which of the current player's pieces have legal moves.
-        Returns a list of (piece, destination) tuples.
+        Determines all legal moves for the current player given a dice roll.
+
+        This method checks for the following conditions:
+        - Moving a piece from the yard onto the board (requires a 6).
+        - Moving a piece along the main track.
+        - Moving a piece into its home column.
+        - Moving a piece within the home column.
+        - Path blocking by opponent's pieces (if rule is enabled).
+
+        Args:
+            game_state: The current state of the game.
+            roll: The integer result of the dice roll.
+            use_blocking_rule: If True, checks for opponent blocks.
+
+        Returns:
+            A list of legal moves, where each move is a tuple containing
+            the Piece to move and its integer destination square.
         """
         player = game_state.players[game_state.current_player_index]
         legal_moves: List[Move] = []
@@ -71,7 +89,21 @@ class Rules:
     def is_square_blocked_by_opponent(
         square_position: int, current_player_color: PlayerColor, game_state: GameState
     ) -> bool:
-        """Checks if a square is blocked by two or more pieces of the same opponent color."""
+        """
+        Checks if a square on the main track is blocked by an opponent.
+
+        A square is considered blocked if two or more of an opponent's
+        pieces occupy it.
+
+        Args:
+            square_position: The integer position of the square to check.
+            current_player_color: The color of the current player, used to
+                identify opponents.
+            game_state: The current state of the game.
+
+        Returns:
+            True if the square is blocked by an opponent, False otherwise.
+        """
         for player in game_state.players:
             if player.color == current_player_color:
                 continue  # Friendly pieces don't block the current player
