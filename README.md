@@ -131,9 +131,10 @@ You can run the game using either the Command-Line Interface (CLI) or the Graphi
 
 The CLI is ideal for quick games, testing bots, or running in a terminal-only environment.
 
-**Run a game (e.g., human vs. random bot):**
+**Run a game (e.g., human vs. a greedy bot):**
 ```bash
-python -m apps.cli.main --players human random --seed 42
+# You can mix and match player types: human, random, greedy
+python -m apps.cli.main --players human greedy --seed 42
 ```
 
 **See all CLI options:**
@@ -470,9 +471,9 @@ Roadmap
 [x] Accessibility/high-contrast
 
 
-[ ] M5 — Polish
+[~] M5 — Polish (In Progress)
 
-[ ] Docs & examples
+[x] Docs & examples
 
 [ ] Packaging (optional: publish to PyPI)
 
