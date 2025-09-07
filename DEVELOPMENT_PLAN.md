@@ -139,9 +139,9 @@ This document provides a detailed, step-by-step development plan for the Python 
 **Goal:** Finalize documentation, packaging, and prepare for a version 1.0 release.
 
 -   **Task 5.1: Finalize Documentation**
-    -   [ ] Update `README.md` with instructions for all features (CLI, GUI, bots).
-    -   [ ] Add API documentation using docstrings.
-    -   [ ] Create a `CONTRIBUTING.md` file with guidelines for developers.
+    -   [x] Update `README.md` with instructions for all features (CLI, GUI, bots).
+    -   [x] Add API documentation using docstrings.
+    -   [x] Create a `CONTRIBUTING.md` file with guidelines for developers.
 -   **Task 5.2: Code Cleanup**
     -   [ ] Perform a final pass of linting and formatting.
     -   [ ] Refactor any complex or unclear parts of the code.
