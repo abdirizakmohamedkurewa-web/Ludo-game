@@ -1,4 +1,5 @@
 import sys
+import os
 
 import pygame  # type: ignore
 
@@ -344,6 +345,7 @@ def draw_game_over_screen(screen, winner, font, ui_buttons):
 
 def main():
     """Main function to run the Ludo game GUI."""
+    os.environ["SDL_AUDIODRIVER"] = "dummy"
     pygame.init()
     font = pygame.font.SysFont("Arial", 24)
     big_font = pygame.font.SysFont("Arial", 48, bold=True)
@@ -489,79 +491,4 @@ def main():
             animation["timer"] += time_delta
             if animation["type"] == "dice_roll":
                 animation["interval_timer"] += time_delta
-                if animation["interval_timer"] >= animation["interval"]:
-                    animation["display_roll"] = dice.roll()  # Visually cycle numbers
-                    animation["interval_timer"] = 0.0
-
-                if animation["timer"] >= animation["duration"]:
-                    # --- Animation Finished: Set final dice roll ---
-                    roll = dice.roll()  # The "real" roll
-                    game.state.dice_roll = roll
-                    legal_moves = Rules.get_legal_moves(game.state, roll)
-                    selected_piece = None
-                    print(
-                        f"Player rolled a {roll}. "
-                        f"Legal moves: {[(m[0].id, m[1]) for m in legal_moves]}"
-                    )
-
-                    if not legal_moves:
-                        print("No legal moves available.")
-                        if roll != 6:
-                            game.next_player()
-                        game.state.dice_roll = None
-
-                    animation = None  # End animation
-
-            elif animation["type"] == "piece_move":
-                progress = min(animation["timer"] / animation["duration"], 1.0)
-
-                start_x, start_y = animation["start_pos"]
-                end_x, end_y = animation["end_pos"]
-
-                # Linear interpolation
-                current_x = start_x + (end_x - start_x) * progress
-                current_y = start_y + (end_y - start_y) * progress
-                animation["current_pos"] = (current_x, current_y)
-
-                if progress >= 1.0:
-                    # --- Animation Finished: Update Game State ---
-                    piece_to_move = animation["piece"]
-                    roll = animation["roll"]
-
-                    move_piece(game.state, piece_to_move, roll)
-                    print(
-                        f"Moved piece {piece_to_move.id} to "
-                        f"destination {animation['destination']}"
-                    )
-
-                    if game.state.is_game_over:
-                        winner = game.state.players[game.state.current_player_index]
-                        print(f"Player {winner.color.name} has won!")
-
-                    if roll != 6:
-                        game.next_player()
-
-                    # Reset for next turn
-                    selected_piece = None
-                    game.state.dice_roll = None
-                    animation = None  # End animation
-
-        # --- Drawing Code ---
-        screen.fill(WHITE)
-        draw_board(screen)
-        draw_legal_move_highlights(screen, game, selected_piece, legal_moves)
-        draw_pieces(screen, game.state, legal_moves, selected_piece, animation)
-        draw_info_panel(screen, game, font, ui_buttons, animation)
-
-        if winner:
-            draw_game_over_screen(screen, winner, big_font, ui_buttons)
-
-        # Update the display
-        pygame.display.flip()
-
-    pygame.quit()
-    sys.exit()
-
-
-if __name__ == "__main__":
-    main()
+                if animation["interval_timer"] >= animation
