@@ -1,4 +1,5 @@
 import sys
+import os
 
 import pygame  # type: ignore
 
@@ -344,6 +345,7 @@ def draw_game_over_screen(screen, winner, font, ui_buttons):
 
 def main():
     """Main function to run the Ludo game GUI."""
+    os.environ["SDL_AUDIODRIVER"] = "dummy"
     pygame.init()
     font = pygame.font.SysFont("Arial", 24)
     big_font = pygame.font.SysFont("Arial", 48, bold=True)
