@@ -1,5 +1,6 @@
 import argparse
 
+from ludo.bots.greedy_bot import GreedyBot
 from ludo.bots.human_bot import HumanBot
 from ludo.bots.random_bot import RandomBot
 from ludo.dice import Dice
@@ -28,6 +29,8 @@ def main():
                 strategies.append(HumanBot())
             elif player.role == "random":
                 strategies.append(RandomBot())
+            elif player.role == "greedy":
+                strategies.append(GreedyBot())
             else:
                 raise ValueError(f"Unknown player role in saved game: {player.role}")
         game = Game(players=players, strategies=strategies, dice=dice, state=state)
@@ -51,6 +54,8 @@ def main():
                 strategies.append(HumanBot())
             elif role == "random":
                 strategies.append(RandomBot())
+            elif role == "greedy":
+                strategies.append(GreedyBot())
             else:
                 raise ValueError(f"Unknown player role: {role}")
         game = Game(players=players, strategies=strategies, dice=dice)
