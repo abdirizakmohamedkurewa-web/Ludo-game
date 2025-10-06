@@ -3,6 +3,8 @@
 > A clean, testable, and extendable implementation of the classic **Ludo** board game in Python.  
 > This README is your end-to-end guide for setting up, understanding the architecture, contributing, and shipping.
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dilan-dio/ludo-python/blob/main/Ludo_in_Colab.ipynb)
+
 ---
 
 ## Table of Contents
