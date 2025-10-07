@@ -491,4 +491,64 @@ def main():
             animation["timer"] += time_delta
             if animation["type"] == "dice_roll":
                 animation["interval_timer"] += time_delta
-                if animation["interval_timer"] >= animation
+                if animation["interval_timer"] >= animation["interval"]:
+                    animation["interval_timer"] -= animation["interval"]
+                    animation["display_roll"] = dice.roll()
+
+                if animation["timer"] >= animation["duration"]:
+                    # Animation is over, now actually roll the dice for the game state
+                    game.roll_dice()
+                    legal_moves = Rules.get_legal_moves(game.state, game.state.dice_roll)
+                    print(f"Legal moves: {legal_moves}")
+                    animation = None  # End animation
+
+                    # If there are no legal moves, automatically end the turn
+                    if not legal_moves:
+                        print("No legal moves. Ending turn.")
+                        game.end_turn()
+                        # We could add a small delay here if we want
+
+            elif animation["type"] == "piece_move":
+                # Interpolate position
+                progress = min(1.0, animation["timer"] / animation["duration"])
+                start_x, start_y = animation["start_pos"]
+                end_x, end_y = animation["end_pos"]
+                interp_x = start_x + (end_x - start_x) * progress
+                interp_y = start_y + (end_y - start_y) * progress
+                animation["current_pos"] = (interp_x, interp_y)
+
+                if progress >= 1.0:
+                    # Move is finished, now update the actual game state
+                    move_piece(
+                        game.state,
+                        animation["piece"],
+                        animation["roll"],
+                        animation["destination"],
+                    )
+                    game.end_turn()
+                    selected_piece = None
+                    animation = None  # End animation
+
+                    # Check for a winner
+                    winner = game.get_winner()
+                    if winner:
+                        print(f"Player {winner.color.name} has won!")
+
+        # --- Drawing ---
+        screen.fill(WHITE)
+        draw_board(screen)
+        draw_pieces(screen, game.state, legal_moves, selected_piece, animation)
+        draw_legal_move_highlights(screen, game, selected_piece, legal_moves)
+        draw_info_panel(screen, game, font, ui_buttons, animation)
+
+        if winner:
+            draw_game_over_screen(screen, winner, big_font, ui_buttons)
+
+        pygame.display.flip()
+
+    pygame.quit()
+    sys.exit()
+
+
+if __name__ == "__main__":
+    main()
